@@ -29,7 +29,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
     public GUI_Agentes() {
         initComponents();
         this.setVisible(true);
-        jfc_selectorEscenario.setCurrentDirectory(new File("/home/jorgeorm/Estudio/Ago-Dic2010/IA/Proy1/Escenarios/"));
+        jfc_selectorEscenario.setCurrentDirectory(new File("src/escenarios/"));
         returnValJFC=0;
         obj_agente=new AgentesIA();
     }
