@@ -79,7 +79,7 @@ public class AgentesIA {
         {
             for(int idx=0;idx<10;idx++)
             {
-                memoriaMapa[idx][idy]=0;
+                memoriaMapa[idx][idy]=escenario[idx][idy];
             }
         }
         NodoEstado raiz= new NodoEstado("", 0, "", pi, nItems, nNaves, 0,memoriaMapa);
@@ -123,10 +123,9 @@ public class AgentesIA {
 
         //Memoria para saber que lugares ya visite Solo la utilizo para saber si ya recogí un item.
         int [][] memoria = padre.getMemoria();
-        memoria[padre.getLugarMatriz().getX()][padre.getLugarMatriz().getY()]=1;
-
+        
         //Si en el mapa es libre
-        if(escenario[x][yN]==0 || escenario[x][yN]==3 || memoria[x][yN]==1)
+        if(memoria[x][yN]==0 || memoria[x][yN]==3)
         {
             //Si va en nave
             if(padre.getNave()>0)
@@ -141,25 +140,27 @@ public class AgentesIA {
             }
         }
         //Si en el mapa es nave
-        else if(escenario[x][yN]==4 || escenario[x][yN]==5)
+        else if(memoria[x][yN]==4 || memoria[x][yN]==5)
         {
             //Si va en nave
             if(padre.getNave()>0)
             {
                 costo=padre.getCosto()+0.5;
-                //Lleno combustible
-                hijo= new NodoEstado(ruta,costo,operador,puntoHijo,padre.getN_items(), padre.getN_naves()-1, padre.getNave()-1+10,memoria);
+                //Paso como si nada
+                hijo= new NodoEstado(ruta,costo,operador,puntoHijo,padre.getN_items(), padre.getN_naves(), padre.getNave()-1,memoria);
             }
             else
             {
                 costo=padre.getCosto()+1;
+                memoria[x][yN]=0;
                 //Lleno combustible
                 hijo= new NodoEstado(ruta,costo,operador,puntoHijo,padre.getN_items(), padre.getN_naves()-1, 10,memoria);
             }
         }
         //Si en el mapa es item
-        else if(escenario[x][yN]==6)
+        else if(memoria[x][yN]==6)
         {
+            memoria[x][yN]=0;
             //Si va en nave
             if(padre.getNave()>0)
             {
@@ -174,7 +175,7 @@ public class AgentesIA {
             //escenario[x][yN]=0;
         }
         //Si en el mapa es campo
-        else if(escenario[x][yN]==7)
+        else if(memoria[x][yN]==7)
         {
             //Si va en nave
             if(padre.getNave()>0)
@@ -198,7 +199,6 @@ public class AgentesIA {
         int x=punto.getX();
         int y=punto.getY();
         ArrayList <NodoEstado> hijos =new ArrayList<NodoEstado>();
-        double costo=0;
         if(y>0)
         {
             int yN=y-1;
@@ -206,7 +206,6 @@ public class AgentesIA {
             NodoEstado hijo= crearHijo(nodo, operador, new Punto(x, yN));
             if (hijo!=null)hijos.add(hijo);
         }
-        //TODO comparación del contenido del escenario para determinar los hijos a insertar en la cola con los operadores faltantes.
         if(x<9)
         {
             int xN=x+1;

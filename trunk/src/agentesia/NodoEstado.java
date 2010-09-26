@@ -18,7 +18,7 @@ public class NodoEstado {
     private int nave;
     private int [][]memoria;
 
-    public NodoEstado(String ruta, double costo, String operador, Punto lugarMatriz, int n_items, int n_naves, int nave, int[][]memoria) {
+    public NodoEstado(String ruta, double costo, String operador, Punto lugarMatriz, int n_items, int n_naves, int nave, int [][]memoria) {
         this.ruta =ruta;
         this.costo = costo;
         this.operador = operador;
@@ -29,7 +29,7 @@ public class NodoEstado {
         this.memoria=memoria;
     }
 
-    public int[][] getMemoria() {
+    public int [][] getMemoria() {
         return memoria;
     }
 
