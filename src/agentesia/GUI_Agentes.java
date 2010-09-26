@@ -134,7 +134,8 @@ public class GUI_Agentes extends javax.swing.JFrame {
                         line++;
                     }
                 }
-                
+                obj_agente=null;
+                obj_agente=new AgentesIA();
                 obj_agente.setEscenario(escen);
                 
             } catch (FileNotFoundException ex) {
