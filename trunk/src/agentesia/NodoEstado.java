@@ -10,24 +10,34 @@ package agentesia;
  * @author jorgeorm
  */
 public class NodoEstado {
-    String ruta ="";
-    double costo;
-    String operador;
-    private Punto lugarMatriz;
+    private String ruta ="";
+    private double costo;
+    private String operador;
     private int n_items,n_naves;
     private int nave;
     private int [][]memoria;
+    private int x,y;
 
-    public NodoEstado(String ruta, double costo, String operador, Punto lugarMatriz, int n_items, int n_naves, int nave, int [][]memoria) {
+    public NodoEstado(String ruta, double costo, String operador, int x, int y, int n_items, int n_naves, int nave, int [][]memoria) {
         this.ruta =ruta;
         this.costo = costo;
         this.operador = operador;
-        this.lugarMatriz = lugarMatriz;
         this.n_items = n_items;
         this.n_naves = n_naves;
         this.nave = nave;
         this.memoria=memoria;
+        this.x=x;
+        this.y=y;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
 
     public int [][] getMemoria() {
         return memoria;
@@ -36,11 +46,7 @@ public class NodoEstado {
     public double getCosto() {
         return costo;
     }
-
-    public Punto getLugarMatriz() {
-        return lugarMatriz;
-    }
-
+    
     public int getN_items() {
         return n_items;
     }
