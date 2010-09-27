@@ -31,7 +31,6 @@ public class GUI_Agentes extends javax.swing.JFrame {
         this.setVisible(true);
         jfc_selectorEscenario.setCurrentDirectory(new File("src/escenarios/"));
         returnValJFC=0;
-        obj_agente=new AgentesIA();
     }
 
     /** This method is called from within the constructor to
@@ -114,19 +113,50 @@ public class GUI_Agentes extends javax.swing.JFrame {
         {
             File f_escenario;
             f_escenario=jfc_selectorEscenario.getSelectedFile();
+            int [][] escen=new int[10][10];
+            int [][] memoria=new int [10][10];
+            int contN=0,contI=0,cordXi=0,cordYi=0,cordXf=0,cordYf=0;
+
             try {
                 Scanner sc = new Scanner(f_escenario);
                 int num;
                 int line=0;
                 int column=0;
-                int [][] escen=new int[10][10];
 
                 while(sc.hasNextInt())
                 {
                     num=sc.nextInt();
                     System.err.print(num+"");
+                    //Saco datos para nodo inicial
+                    ///si es inicio
+                    if(num==2)
+                    {
+                        cordXi=column;
+                        cordYi=line;
+                    }
+                    //Salida
+                    else if(num==3)
+                    {
+                        cordXf=column;
+                        cordYf=line;
+                    }
+                    //Nave
+                    else if(num==4 || num==5)
+                    {
+                        contN++;
+                    }
+                    //item
+                    else if(num==6)
+                    {
+                        contI++;
+                    }
+
+                    //asigno los valores a las matrices del mapa y la memoria
                     escen[column][line]=num;
+                    memoria[column][line]=num;
+                    
                     column++;
+
                     if(column>=10)
                     {
                         System.err.println();
@@ -134,14 +164,26 @@ public class GUI_Agentes extends javax.swing.JFrame {
                         line++;
                     }
                 }
-                obj_agente=null;
-                obj_agente=new AgentesIA();
-                obj_agente.setEscenario(escen);
-                
+                                
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
             }
-            obj_escenario.paintEscenario(obj_agente.getEscenario(), obj_escenario.getGraphics());
+            obj_escenario.paintEscenario(escen, obj_escenario.getGraphics());
+            //Para la nueva estructura
+                
+
+                NodoEstado raiz=new NodoEstado("", 0, "", cordXi, cordYi, contI, contN, 0, memoria);
+                Amplitud obj_amplitud=new Amplitud(raiz, cordXf, cordYf);
+                NodoEstado respuesta = obj_amplitud.ejecutar();
+
+                if(respuesta.equals(null)) System.out.println("No se encontró respuesta con aplitud");
+                else
+                {
+                    System.out.println("Se encontró respuesta con amplitud");
+                    System.out.println("Ruta: "+respuesta.getRuta()+", ("+respuesta.getX()+", "+respuesta.getY()+")");
+                    System.out.println("Operadores: "+respuesta.getOperador());
+                    System.out.println("Costo: "+respuesta.getCosto());
+                }
         }
     }//GEN-LAST:event_jmi_cargaEscenarioActionPerformed
 
@@ -168,7 +210,6 @@ public class GUI_Agentes extends javax.swing.JFrame {
     private javax.swing.JPanel jp_juego;
     // End of variables declaration//GEN-END:variables
     private int returnValJFC;
-    private AgentesIA obj_agente;
     private EscenarioGrafico obj_escenario;
     public static final int ancho=601;
     public static final int alto=601;
