@@ -33,9 +33,9 @@ public abstract class Busqueda {
 
         //Si la cadenas estan vacias no usar comas
         if(padre.getOperador().equals("")) operador=padre.getOperador()+operador;
-        else operador=padre.getOperador()+", "+operador;
-        if(padre.getRuta().equals("")) ruta="("+padre.getX()+", "+padre.getY()+")";
-        else ruta=padre.getRuta()+", "+"("+padre.getX()+", "+padre.getY()+")";
+        else operador=padre.getOperador()+","+operador;
+        if(padre.getRuta().equals("")) ruta="("+padre.getX()+","+padre.getY()+")";
+        else ruta=padre.getRuta()+",("+padre.getX()+","+padre.getY()+")";
 
         //Memoria para saber que lugares ya visite Solo la utilizo para saber si ya recogí un item.
         int [][] memoriaPadre=padre.getMemoria();
