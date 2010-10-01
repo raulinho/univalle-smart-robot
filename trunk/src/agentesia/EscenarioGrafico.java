@@ -33,7 +33,7 @@ public class EscenarioGrafico extends Canvas{
         bi_fondo=cargarImagen("img/Escenario.jpg");
     }
 
-    public BufferedImage cargarImagen(String nombre)
+    public final BufferedImage cargarImagen(String nombre)
     {
         URL url=null;
         try {
@@ -54,10 +54,10 @@ public class EscenarioGrafico extends Canvas{
         //Pintando imagen cargada
         grphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
     }
-
-    public void paintEscenario(int[][]mapa,Graphics graphcs)
+    
+    public void paintEscenario(int[][]mapa)
     {
-        //TODO: Cambiar en los Draws y Fills el tamaño de 60 a los factores
+        Graphics graphcs=this.getGraphics();
         int cordx=0;
         int cordy=0;
         int factorx=alto/10;

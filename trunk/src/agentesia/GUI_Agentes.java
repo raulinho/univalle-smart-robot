@@ -107,7 +107,6 @@ public class GUI_Agentes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmi_cargaEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_cargaEscenarioActionPerformed
-        // TODO add your handling code here:
         returnValJFC=jfc_selectorEscenario.showOpenDialog(this);
         if(returnValJFC == JFileChooser.APPROVE_OPTION)
         {
@@ -168,15 +167,15 @@ public class GUI_Agentes extends javax.swing.JFrame {
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
             }
-            obj_escenario.paintEscenario(escen, obj_escenario.getGraphics());
+            obj_escenario.paintEscenario(escen);
             //Para la nueva estructura
                 
 
                 NodoEstado raiz=new NodoEstado("", 0, "", cordXi, cordYi, contI, contN, 0, memoria);
-                Amplitud obj_amplitud=new Amplitud(raiz, cordXf, cordYf);
+                Amplitud obj_amplitud=new Amplitud(raiz, cordXf, cordYf,escen);
                 NodoEstado respuesta = obj_amplitud.ejecutar();
 
-                if(respuesta.equals(null)) System.out.println("No se encontró respuesta con aplitud");
+                if(respuesta==null) System.out.println("No se encontró respuesta con aplitud");
                 else
                 {
                     System.out.println("Se encontró respuesta con amplitud");
