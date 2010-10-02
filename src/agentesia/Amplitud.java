@@ -64,7 +64,6 @@ public class Amplitud extends Busqueda {
         boolean lugarDevuelta=mapa[x][y]==6||mapa[x][y]==5||mapa[x][y]==4;
 
         String lastOperador=nodo.getOperador();
-        System.out.println(lastOperador);
         if(lastOperador.length()>0)lastOperador=lastOperador.charAt((lastOperador.length()-1))+"";
 
         ArrayList <NodoEstado> hijos =new ArrayList<NodoEstado>();
