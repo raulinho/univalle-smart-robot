@@ -157,4 +157,6 @@ public abstract class Busqueda {
     }
 
     public abstract boolean esMeta(NodoEstado nodo);
+
+    public abstract NodoEstado ejecutar ();
 }
