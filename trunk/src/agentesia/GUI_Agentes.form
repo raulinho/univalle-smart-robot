@@ -6,28 +6,40 @@
     </Component>
     <Menu class="javax.swing.JMenuBar" name="jmb_config">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jm_agente">
+        <Menu class="javax.swing.JMenu" name="jm_busqueda">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Agente"/>
+            <Property name="text" type="java.lang.String" value="Configuraci&#xf3;n"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jmi_tipoAgente">
+            <Menu class="javax.swing.JMenu" name="jm_tipoBusqueda">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Tipo Agente"/>
+                <Property name="text" type="java.lang.String" value="Algoritmo Busqueda"/>
               </Properties>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jm_ambiente">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Ambiente"/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jmi_tipoAmbiente">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Tipo Ambiente"/>
-              </Properties>
-            </MenuItem>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="jmi_informada">
+                  <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Alt+I"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Informada"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_informadaActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="jmi_noInformada">
+                  <Properties>
+                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                      <KeyStroke key="Alt+N"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="No Informada"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_noInformadaActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jm_escenario">

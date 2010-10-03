@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /*
  * To change this template, choose Tools | Templates
@@ -45,10 +47,10 @@ public class GUI_Agentes extends javax.swing.JFrame {
         jfc_selectorEscenario = new javax.swing.JFileChooser();
         jp_juego = new javax.swing.JPanel();
         jmb_config = new javax.swing.JMenuBar();
-        jm_agente = new javax.swing.JMenu();
-        jmi_tipoAgente = new javax.swing.JMenuItem();
-        jm_ambiente = new javax.swing.JMenu();
-        jmi_tipoAmbiente = new javax.swing.JMenuItem();
+        jm_busqueda = new javax.swing.JMenu();
+        jm_tipoBusqueda = new javax.swing.JMenu();
+        jmi_informada = new javax.swing.JMenuItem();
+        jmi_noInformada = new javax.swing.JMenuItem();
         jm_escenario = new javax.swing.JMenu();
         jmi_cargaEscenario = new javax.swing.JMenuItem();
 
@@ -75,19 +77,31 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
         getContentPane().add(jp_juego);
 
-        jm_agente.setText("Agente");
+        jm_busqueda.setText("Configuración");
 
-        jmi_tipoAgente.setText("Tipo Agente");
-        jm_agente.add(jmi_tipoAgente);
+        jm_tipoBusqueda.setText("Algoritmo Busqueda");
 
-        jmb_config.add(jm_agente);
+        jmi_informada.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
+        jmi_informada.setText("Informada");
+        jmi_informada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_informadaActionPerformed(evt);
+            }
+        });
+        jm_tipoBusqueda.add(jmi_informada);
 
-        jm_ambiente.setText("Ambiente");
+        jmi_noInformada.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
+        jmi_noInformada.setText("No Informada");
+        jmi_noInformada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_noInformadaActionPerformed(evt);
+            }
+        });
+        jm_tipoBusqueda.add(jmi_noInformada);
 
-        jmi_tipoAmbiente.setText("Tipo Ambiente");
-        jm_ambiente.add(jmi_tipoAmbiente);
+        jm_busqueda.add(jm_tipoBusqueda);
 
-        jmb_config.add(jm_ambiente);
+        jmb_config.add(jm_busqueda);
 
         jm_escenario.setText("Escenario");
 
@@ -169,11 +183,31 @@ public class GUI_Agentes extends javax.swing.JFrame {
             }
             obj_escenario.paintEscenario(escen);
             //Para la nueva estructura
-                
+            NodoEstado raiz=new NodoEstado("", 0, "", cordXi, cordYi, contI, contN, 0, memoria);
+            factoria=new FactoriaBusqueda(raiz, cordXf, cordYf,escen);
+        }
+    }//GEN-LAST:event_jmi_cargaEscenarioActionPerformed
 
-                NodoEstado raiz=new NodoEstado("", 0, "", cordXi, cordYi, contI, contN, 0, memoria);
-                Amplitud obj_amplitud=new Amplitud(raiz, cordXf, cordYf,escen);
-                NodoEstado respuesta = obj_amplitud.ejecutar();
+    private void jmi_noInformadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_noInformadaActionPerformed
+        if(factoria!=null)
+        {
+            Object [] posiblilidades ={"Amplitud","Costo","Profundidad"};
+            //En el null va un icono
+            String select =(String)JOptionPane.showInputDialog(this,"Busqueda preferente por: ","Busqueda",JOptionPane.PLAIN_MESSAGE,null,posiblilidades,"Amplitud");
+            Busqueda obj_busqueda=null;
+            if(select.equals(posiblilidades[0]))
+            {
+                obj_busqueda=factoria.crearNoInformada(select);
+            }else if(select.equals(posiblilidades[1]))
+            {
+
+            }else if(select.equals(posiblilidades[2]))
+            {
+
+            }
+            if(obj_busqueda!=null)
+            {
+                NodoEstado respuesta = obj_busqueda.ejecutar();
 
                 if(respuesta==null) System.out.println("No se encontró respuesta con aplitud");
                 else
@@ -183,8 +217,13 @@ public class GUI_Agentes extends javax.swing.JFrame {
                     System.out.println("Operadores: "+respuesta.getOperador());
                     System.out.println("Costo: "+respuesta.getCosto());
                 }
-        }
-    }//GEN-LAST:event_jmi_cargaEscenarioActionPerformed
+            }
+        } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_jmi_noInformadaActionPerformed
+
+    private void jmi_informadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_informadaActionPerformed
+        // TODO Añadir configuración de busqueda Informada
+    }//GEN-LAST:event_jmi_informadaActionPerformed
 
     /**
     * @param args the command line arguments
@@ -199,17 +238,18 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser jfc_selectorEscenario;
-    private javax.swing.JMenu jm_agente;
-    private javax.swing.JMenu jm_ambiente;
+    private javax.swing.JMenu jm_busqueda;
     private javax.swing.JMenu jm_escenario;
+    private javax.swing.JMenu jm_tipoBusqueda;
     private javax.swing.JMenuBar jmb_config;
     private javax.swing.JMenuItem jmi_cargaEscenario;
-    private javax.swing.JMenuItem jmi_tipoAgente;
-    private javax.swing.JMenuItem jmi_tipoAmbiente;
+    private javax.swing.JMenuItem jmi_informada;
+    private javax.swing.JMenuItem jmi_noInformada;
     private javax.swing.JPanel jp_juego;
     // End of variables declaration//GEN-END:variables
     private int returnValJFC;
     private EscenarioGrafico obj_escenario;
     public static final int ancho=601;
     public static final int alto=601;
+    private FactoriaBusqueda factoria;
 }
