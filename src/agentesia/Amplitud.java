@@ -14,7 +14,6 @@ import java.util.ArrayList;
 //TODO Clase amplitud incompleta tiene error de memoria.
 public class Amplitud extends Busqueda {
     private NodoEstado nodoraiz;
-    private int [][] mapa;
 
     public Amplitud(NodoEstado raiz, int cordXf,int cordYf , int[][] mapa)
     {
@@ -49,18 +48,6 @@ public class Amplitud extends Busqueda {
                 listaNodos.remove(0);
                 //EliminoNodos que nacen al devolverse inmediatamente
                 ArrayList<NodoEstado> hijos = aplicarOperadores(nodoActual);
-                boolean lugarDevolvible=mapa[nodoActual.getX()][nodoActual.getY()]==6||mapa[nodoActual.getX()][nodoActual.getY()]==5||mapa[nodoActual.getX()][nodoActual.getY()]==4;
-                for(int idx=0;idx<hijos.size();idx++)
-                {
-                    char operadorPadre,operadorHijo;
-                    operadorHijo=hijos.get(idx).ultimoOperador();
-                    operadorPadre=nodoActual.ultimoOperador();
-                    boolean inverso=(operadorHijo=='←' && operadorPadre=='→')||
-                            (operadorHijo=='→'&& operadorPadre=='←')||
-                            (operadorHijo=='↑'&& operadorPadre=='↓')||
-                            (operadorHijo=='↓'&& operadorPadre=='↑');
-                    if(inverso && !lugarDevolvible) hijos.remove(idx);
-                }
                 listaNodos.addAll(hijos);
             }
         }
