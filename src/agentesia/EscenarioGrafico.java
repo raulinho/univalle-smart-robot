@@ -72,6 +72,7 @@ public class EscenarioGrafico extends Canvas{
     public void paintEscenario(int[][]mapa)
     {
         Graphics graphcs=this.getGraphics();
+        graphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
         int cordx=0;
         int cordy=0;
         int factorx=alto/10;
