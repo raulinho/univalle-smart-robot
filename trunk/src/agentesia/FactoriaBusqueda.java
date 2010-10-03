@@ -42,8 +42,8 @@ public class FactoriaBusqueda {
     {
         Busqueda busqueda=null;
         if(tipo.equals("Amplitud"))busqueda=new Amplitud(raiz, cordXf, cordYf, mapa);
-        //else if(tipo.equals("Costo"))busqueda=new Costo(raiz, cordXf, cordYf);
-        else if(tipo.equals("Profundidad"))busqueda=new Profundidad(raiz,cordXf,cordYf);
+        else if(tipo.equals("Costo"))busqueda=new Costo(raiz, cordXf, cordYf, mapa);
+        else if(tipo.equals("Profundidad"))busqueda=new Profundidad(raiz,cordXf,cordYf,mapa);
         return busqueda;
     }
 

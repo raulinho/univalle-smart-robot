@@ -18,13 +18,14 @@ public class Costo extends Busqueda{
     PriorityQueue<NodoEstado> colaPrioridad;
     ComparadorEstados comparador;
 
-    public Costo(NodoEstado raiz, int cordX, int cordY)
+    public Costo(NodoEstado raiz, int cordX, int cordY, int escen[][])
     {
         cordXSalida=cordX;
         cordYSalida=cordY;
         nodoRaiz=raiz;
         comparador= new ComparadorEstados();
         colaPrioridad= new PriorityQueue(1,comparador);
+        mapa=escen.clone();
     }
 
     public NodoEstado ejecutar()
@@ -41,7 +42,7 @@ public class Costo extends Busqueda{
             else
             {
                 ArrayList<NodoEstado> nodosHijos= aplicarOperadores(nodo);
-
+                
                 for(int x=0; x<nodosHijos.size(); x++)
                 {
                     colaPrioridad.add(nodosHijos.get(x));

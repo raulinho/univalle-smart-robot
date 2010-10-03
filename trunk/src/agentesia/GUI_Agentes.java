@@ -195,24 +195,15 @@ public class GUI_Agentes extends javax.swing.JFrame {
             //En el null va un icono
             String select =(String)JOptionPane.showInputDialog(this,"Busqueda preferente por: ","Busqueda",JOptionPane.PLAIN_MESSAGE,null,posiblilidades,"Amplitud");
             Busqueda obj_busqueda=null;
-            if(select.equals(posiblilidades[0]))
-            {
-                obj_busqueda=factoria.crearNoInformada(select);
-            }else if(select.equals(posiblilidades[1]))
-            {
-
-            }else if(select.equals(posiblilidades[2]))
-            {
-
-            }
+            obj_busqueda=factoria.crearNoInformada(select);
             if(obj_busqueda!=null)
             {
                 NodoEstado respuesta = obj_busqueda.ejecutar();
 
-                if(respuesta==null) System.out.println("No se encontró respuesta con aplitud");
+                if(respuesta==null) System.out.println("No se encontró respuesta con "+select);
                 else
                 {
-                    System.out.println("Se encontró respuesta con amplitud");
+                    System.out.println("Se encontró respuesta con "+select);
                     System.out.println("Ruta: "+respuesta.getRuta()+", ("+respuesta.getX()+", "+respuesta.getY()+")");
                     System.out.println("Operadores: "+respuesta.getOperador());
                     System.out.println("Costo: "+respuesta.getCosto());

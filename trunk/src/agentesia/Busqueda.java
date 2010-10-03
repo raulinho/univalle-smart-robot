@@ -6,6 +6,7 @@
 package agentesia;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public abstract class Busqueda {
     protected ArrayList<NodoEstado> listaNodos;
     protected int cordXSalida,cordYSalida;
-    
+    protected int [][] mapa;
     public Busqueda()
     {
         listaNodos=new ArrayList<NodoEstado>();
@@ -31,12 +32,21 @@ public abstract class Busqueda {
         //Nodo estado que se va a retornar
         NodoEstado hijo=null;
 
+        try{
+
         //Si la cadenas estan vacias no usar comas
         if(padre.getOperador().equals("")) operador=padre.getOperador()+operador;
         else operador=padre.getOperador()+","+operador;
         if(padre.getRuta().equals("")) ruta="("+padre.getX()+","+padre.getY()+")";
         else ruta=padre.getRuta()+",("+padre.getX()+","+padre.getY()+")";
-
+        }catch(OutOfMemoryError exc)
+        {
+            System.err.println("LLego al limite de memoria de java este nodo no se expande");
+            System.err.println("Nodo: "+padre.getX()+","+padre.getY());
+            System.err.println("Profundidad: "+profundidadPorOps(padre));
+            System.out.println("Operadores: "+padre.getOperador());
+            return null;
+        }
         //Memoria para saber que lugares ya visite Solo la utilizo para saber si ya recogí un item.
         int [][] memoriaPadre=padre.getMemoria();
         int [][] memoria = new int [10][10];
@@ -118,6 +128,13 @@ public abstract class Busqueda {
         return hijo;
     }
 
+    public int profundidadPorOps(NodoEstado nodo)
+    {
+        int tamanoOps=nodo.getOperador().length();
+        int comas=(tamanoOps-1)/2;
+        tamanoOps=tamanoOps-comas;
+        return tamanoOps;
+    }
     //Determina que operadores se pueden aplicar
     public ArrayList<NodoEstado> aplicarOperadores(NodoEstado nodo)
     {
@@ -151,6 +168,20 @@ public abstract class Busqueda {
             String operador="←";
             NodoEstado hijo= crearHijo(nodo, operador, xN, y);
             if (hijo!=null)hijos.add(hijo);
+        }
+        boolean lugarDevolvible=mapa[nodo.getX()][nodo.getY()]==6||
+                mapa[nodo.getX()][nodo.getY()]==5||
+                mapa[nodo.getX()][nodo.getY()]==4;
+        for(int idx=0;idx<hijos.size();idx++)
+        {
+            char operadorPadre,operadorHijo;
+            operadorHijo=hijos.get(idx).ultimoOperador();
+            operadorPadre=nodo.ultimoOperador();
+            boolean inverso=(operadorHijo=='←' && operadorPadre=='→')||
+                    (operadorHijo=='→'&& operadorPadre=='←')||
+                    (operadorHijo=='↑'&& operadorPadre=='↓')||
+                    (operadorHijo=='↓'&& operadorPadre=='↑');
+            if(inverso && !lugarDevolvible) hijos.remove(idx);
         }
 
         return hijos;
