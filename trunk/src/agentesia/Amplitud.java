@@ -47,60 +47,24 @@ public class Amplitud extends Busqueda {
             {
                 //Expando el nodo por amplitud
                 listaNodos.remove(0);
-                listaNodos.addAll(aplicarOperadores(nodoActual));
+                //EliminoNodos que nacen al devolverse inmediatamente
+                ArrayList<NodoEstado> hijos = aplicarOperadores(nodoActual);
+                boolean lugarDevolvible=mapa[nodoActual.getX()][nodoActual.getY()]==6||mapa[nodoActual.getX()][nodoActual.getY()]==5||mapa[nodoActual.getX()][nodoActual.getY()]==4;
+                for(int idx=0;idx<hijos.size();idx++)
+                {
+                    char operadorPadre,operadorHijo;
+                    operadorHijo=hijos.get(idx).ultimoOperador();
+                    operadorPadre=nodoActual.ultimoOperador();
+                    boolean inverso=(operadorHijo=='←' && operadorPadre=='→')||
+                            (operadorHijo=='→'&& operadorPadre=='←')||
+                            (operadorHijo=='↑'&& operadorPadre=='↓')||
+                            (operadorHijo=='↓'&& operadorPadre=='↑');
+                    if(inverso && !lugarDevolvible) hijos.remove(idx);
+                }
+                listaNodos.addAll(hijos);
             }
         }
         return null;
-    }
-
-    //Determina que operadores se pueden aplicar y evita devolverse a menos que haya un item en el mapa o una nave
-    @Override
-    public ArrayList<NodoEstado> aplicarOperadores(NodoEstado nodo)
-    {
-        int x=nodo.getX();
-        int y=nodo.getY();
-
-
-        boolean lugarDevuelta=mapa[x][y]==6||mapa[x][y]==5||mapa[x][y]==4;
-
-        String lastOperador=nodo.getOperador();
-        if(lastOperador.length()>0)lastOperador=lastOperador.charAt((lastOperador.length()-1))+"";
-
-        ArrayList <NodoEstado> hijos =new ArrayList<NodoEstado>();
-        if(y>0)
-        {
-            int yN=y-1;
-            String operador="↑";
-            NodoEstado hijo= null;
-            if(lastOperador!="↓"||lugarDevuelta)hijo= crearHijo(nodo, operador, x, yN);
-            if (hijo!=null)hijos.add(hijo);
-        }
-        if(x<9)
-        {
-            int xN=x+1;
-            String operador="→";
-            NodoEstado hijo= null;
-            if(lastOperador!="←"||lugarDevuelta)hijo= crearHijo(nodo, operador, xN,y);
-            if (hijo!=null)hijos.add(hijo);
-        }
-        if(y<9)
-        {
-            int yN=y+1;
-            String operador="↓";
-            NodoEstado hijo= null;
-            if(lastOperador!="↑"||lugarDevuelta)hijo= crearHijo(nodo, operador, x, yN);
-            if (hijo!=null)hijos.add(hijo);
-        }
-        if(x>0)
-        {
-            int xN=x-1;
-            String operador="←";
-            NodoEstado hijo= null;
-            if(lastOperador!="→"||lugarDevuelta)hijo= crearHijo(nodo, operador, xN,y);
-            if (hijo!=null)hijos.add(hijo);
-        }
-
-        return hijos;
     }
 
     public boolean esMeta(NodoEstado nodo)

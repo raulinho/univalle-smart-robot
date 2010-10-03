@@ -66,4 +66,9 @@ public class NodoEstado {
     {
         return nave;
     }
+    public char ultimoOperador()
+    {
+        if(operador.length()>0)return operador.charAt(operador.length()-1);
+        else return ' ';
+    }
 }
