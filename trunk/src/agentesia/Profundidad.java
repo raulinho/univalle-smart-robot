@@ -39,14 +39,26 @@ public class Profundidad extends Busqueda{
     {
         String ruta=nodo.getRuta();
         Scanner sc=new Scanner(ruta);
+        sc.useDelimiter(",");
+        String cordNodo;
+        CharSequence cadena= "("+ nodo.getX() + nodo.getY() + ")";
         int x,y;
         int count=0;
-        while(sc.hasNextInt())
+        while(sc.hasNext())
         {
-            x=sc.nextInt();
+           /* x=sc.nextInt();
             y=sc.nextInt();
             if(x==nodo.getX()&&y==nodo.getY())
             {
+                System.out.println("encontre un ciclo, las coordenadas son iguales");
+                count++;
+            }*/
+            cordNodo=sc.next();
+            cordNodo=cordNodo.concat(sc.next());
+            System.out.println("la coordenada en la ruta es : " + cordNodo);
+            if(cordNodo.contentEquals(cadena)) 
+            {
+                System.out.println("encontre un ciclo, las coordenadas son iguales");
                 count++;
             }
         }
