@@ -23,9 +23,13 @@ public class EscenarioGrafico extends Canvas{
     private int ancho;
     private int alto;
     private BufferedImage bi_fondo;
+    private boolean flagEscenario;
+    private int[][]mapa;
 
     public EscenarioGrafico(int alto, int ancho)
     {
+        mapa=new int[10][10];
+        flagEscenario=false;
         this.ancho=ancho;
         this.alto=alto;
         this.setBounds(0,0,this.alto,this.ancho);
@@ -53,6 +57,7 @@ public class EscenarioGrafico extends Canvas{
         super.paint(grphcs);
         //Pintando imagen cargada
         grphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
+        if(flagEscenario)paintEscenario(this.mapa);
     }
     
     public void paintEscenario(int[][]mapa)
@@ -71,6 +76,7 @@ public class EscenarioGrafico extends Canvas{
                 cordy=idy*factory;
                 int valMap=mapa[idx][idy];
                 graphcs.drawRect(cordx, cordy, 60, 60);
+                this.mapa[idx][idy]=valMap;
                 switch(valMap)
                 {
                 //obstaculo
@@ -114,6 +120,7 @@ public class EscenarioGrafico extends Canvas{
 
             }
         }
+        flagEscenario=true;
     }
 
 }
