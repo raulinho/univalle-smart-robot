@@ -59,7 +59,16 @@ public class EscenarioGrafico extends Canvas{
         grphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
         if(flagEscenario)paintEscenario(this.mapa);
     }
-    
+
+    @Override
+    public void repaint() {
+        super.repaint();
+        Graphics graph=getGraphics();
+        graph.drawImage(bi_fondo, 0, 0,alto,ancho,this);
+        if(flagEscenario)paintEscenario(this.mapa);
+    }
+
+
     public void paintEscenario(int[][]mapa)
     {
         Graphics graphcs=this.getGraphics();
