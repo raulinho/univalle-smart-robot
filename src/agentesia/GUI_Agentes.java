@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -204,7 +203,8 @@ public class GUI_Agentes extends javax.swing.JFrame {
                 else
                 {
                     System.out.println("Se encontró respuesta con "+select);
-                    System.out.println("Ruta: "+respuesta.getRuta()+", ("+respuesta.getX()+", "+respuesta.getY()+")");
+                    System.out.println("Ruta: "+respuesta.getRuta()+",("+respuesta.getX()+","+respuesta.getY()+")");
+                    System.out.println("Profundidad: "+respuesta.getProfundidadPorOps());
                     System.out.println("Operadores: "+respuesta.getOperador());
                     System.out.println("Costo: "+respuesta.getCosto());
                 }

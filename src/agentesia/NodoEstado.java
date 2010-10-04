@@ -30,6 +30,14 @@ public class NodoEstado {
         this.y=y;
     }
 
+    public int getProfundidadPorOps()
+    {
+        int tamanoOps=operador.length();
+        int comas=(tamanoOps-1)/2;
+        tamanoOps=tamanoOps-comas;
+        return tamanoOps;
+    }
+
     public int getX() {
         return x;
     }
