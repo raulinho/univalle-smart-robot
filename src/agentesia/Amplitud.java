@@ -11,7 +11,6 @@ import java.util.ArrayList;
  *
  * @author jorgeorm
  */
-//TODO Clase amplitud incompleta tiene error de memoria.
 public class Amplitud extends Busqueda {
     private NodoEstado nodoraiz;
 
