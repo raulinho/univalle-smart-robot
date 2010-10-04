@@ -43,7 +43,7 @@ public abstract class Busqueda {
         {
             System.err.println("LLego al limite de memoria de java este nodo no se expande");
             System.err.println("Nodo: "+padre.getX()+","+padre.getY());
-            System.err.println("Profundidad: "+profundidadPorOps(padre));
+            System.err.println("Profundidad: "+padre.getProfundidadPorOps());
             System.out.println("Operadores: "+padre.getOperador());
             return null;
         }
@@ -128,13 +128,6 @@ public abstract class Busqueda {
         return hijo;
     }
 
-    public int profundidadPorOps(NodoEstado nodo)
-    {
-        int tamanoOps=nodo.getOperador().length();
-        int comas=(tamanoOps-1)/2;
-        tamanoOps=tamanoOps-comas;
-        return tamanoOps;
-    }
     //Determina que operadores se pueden aplicar
     public ArrayList<NodoEstado> aplicarOperadores(NodoEstado nodo)
     {
@@ -169,6 +162,7 @@ public abstract class Busqueda {
             NodoEstado hijo= crearHijo(nodo, operador, xN, y);
             if (hijo!=null)hijos.add(hijo);
         }
+        //Elimino el hijo que no se necesitan contemplar
         boolean lugarDevolvible=mapa[nodo.getX()][nodo.getY()]==6||
                 mapa[nodo.getX()][nodo.getY()]==5||
                 mapa[nodo.getX()][nodo.getY()]==4;
