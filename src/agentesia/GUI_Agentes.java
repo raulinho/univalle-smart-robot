@@ -213,7 +213,29 @@ public class GUI_Agentes extends javax.swing.JFrame {
     }//GEN-LAST:event_jmi_noInformadaActionPerformed
 
     private void jmi_informadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_informadaActionPerformed
-        // TODO Añadir configuración de busqueda Informada
+        if(factoria!=null)
+        {
+            Object [] posibilidades ={"Avara","A*"};
+            //En el null va un icono
+            String select =(String)JOptionPane.showInputDialog(this,"Busqueda preferente por: ","Busqueda",JOptionPane.PLAIN_MESSAGE,null,posibilidades,"Avara");
+            Busqueda obj_busqueda=null;
+            obj_busqueda=factoria.crearInformada(select);
+            if(obj_busqueda!=null)
+            {
+                NodoEstado respuesta = obj_busqueda.ejecutar();
+
+                if(respuesta==null) System.out.println("No se encontró respuesta con "+select);
+                else
+                {
+                    System.out.println("Se encontró respuesta con "+select);
+                    System.out.println("Ruta: "+respuesta.getRuta()+",("+respuesta.getX()+","+respuesta.getY()+")");
+                    System.out.println("Profundidad: "+respuesta.getProfundidadPorOps());
+                    System.out.println("Operadores: "+respuesta.getOperador());
+                    System.out.println("Costo: "+respuesta.getCosto());
+                }
+            }
+        } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
+
     }//GEN-LAST:event_jmi_informadaActionPerformed
 
     /**
