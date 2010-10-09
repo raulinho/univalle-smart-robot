@@ -11,7 +11,8 @@ package agentesia;
  */
 public class NodoEstado {
     private String ruta ="";
-    private double costo;
+    private double costo; // Costo para implementar en las busquedas NO informadas
+    private double costo_estimado; // Costo para implementar en las busquedas Informadas
     private String operador;
     private int n_items,n_naves;
     private int nave;
@@ -53,6 +54,10 @@ public class NodoEstado {
 
     public double getCosto() {
         return costo;
+    }
+
+    public double getCosto_est() {
+        return costo_estimado;
     }
     
     public int getN_items() {

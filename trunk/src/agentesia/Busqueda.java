@@ -6,7 +6,7 @@
 package agentesia;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 /**
  *
@@ -16,6 +16,7 @@ public abstract class Busqueda {
     protected ArrayList<NodoEstado> listaNodos;
     protected int cordXSalida,cordYSalida;
     protected int [][] mapa;
+    
     public Busqueda()
     {
         listaNodos=new ArrayList<NodoEstado>();
@@ -180,6 +181,61 @@ public abstract class Busqueda {
         }
 
         return hijos;
+    }
+    
+    //Aplica la Heuristica 1 (funcion por partes para la distancia en linea recta al punto deseado)
+    public double aplicarH1(NodoEstado nodo)
+    {
+        double h=0.0;
+        double sumaCuadrados=0.0;
+        int xItem=0;
+        int yItem=0;
+
+        if(nodo.getN_items()==0) 
+        {
+            for(int i=0; i<9; i++)
+            {
+                for(int j=0; j<9; j++)
+                {
+                    if(mapa[i][j]==5)
+                    {
+                        xItem=i;
+                        yItem=j;
+                    }
+                    else System.out.println("No se encontro coordenadas del item para aplicar la heuristica");
+                }
+            }
+            
+            sumaCuadrados=Math.pow((double)(xItem-nodo.getX()), 2.0) + Math.pow((double)(yItem-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(sumaCuadrados)/2);
+        }
+        else if (nodo.getN_items()==1)
+            {
+                for(int i=0; i<9; i++)
+                {
+                    for(int j=0; j<9; j++)
+                    {
+                        if(mapa[i][j]==6)
+                        {
+                            xItem=i;
+                            yItem=j;
+                        }
+                        else System.out.println("No se encontro coordenadas del item para aplicar la heuristica");
+                    }
+                }
+
+                sumaCuadrados=Math.pow((double)(xItem-nodo.getX()), 2.0) + Math.pow((double)(yItem-nodo.getY()), 2.0);
+                h=Math.abs(Math.sqrt(sumaCuadrados)/2);
+            }
+            else
+            {
+                xItem=cordXSalida;
+                yItem=cordYSalida;
+                sumaCuadrados=Math.pow((double)(xItem-nodo.getX()), 2.0) + Math.pow((double)(yItem-nodo.getY()), 2.0);
+                h=Math.abs(Math.sqrt(sumaCuadrados)/2);
+            }
+            
+        return h;
     }
 
     public abstract boolean esMeta(NodoEstado nodo);
