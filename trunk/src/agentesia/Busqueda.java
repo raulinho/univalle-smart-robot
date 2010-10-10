@@ -136,7 +136,6 @@ public abstract class Busqueda {
         return hijo;
     }
 
-    //TODO: Contar nodos expandidos
     //Determina que operadores se pueden aplicar
     public ArrayList<NodoEstado> aplicarOperadores(NodoEstado nodo)
     {
