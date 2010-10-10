@@ -216,10 +216,13 @@ public class GUI_Agentes extends javax.swing.JFrame {
         if(factoria!=null)
         {
             Object [] posibilidades ={"Avara","A*"};
+            Object [] heuristicas = {"Heuristica 1", "Heuristica 2"};
             //En el null va un icono
             String select =(String)JOptionPane.showInputDialog(this,"Busqueda preferente por: ","Busqueda",JOptionPane.PLAIN_MESSAGE,null,posibilidades,"Avara");
+            String selectH =(String)JOptionPane.showInputDialog(this,"Escoja la heuristica a usar: ","Heuristicas",JOptionPane.PLAIN_MESSAGE,null,heuristicas,"Heuristica 1");
             Busqueda obj_busqueda=null;
-            obj_busqueda=factoria.crearInformada(select);
+
+            obj_busqueda=factoria.crearInformada(select, selectH);
             if(obj_busqueda!=null)
             {
                 NodoEstado respuesta = obj_busqueda.ejecutar();

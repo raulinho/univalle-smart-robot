@@ -47,11 +47,13 @@ public class FactoriaBusqueda {
         return busqueda;
     }
 
-    public Busqueda crearInformada (String tipo)
+    public Busqueda crearInformada (String tipo, String heuristica)
     {
         Busqueda busqueda=null;
-        if(tipo.equals("Avara"))busqueda=new Avara(raiz, cordXf, cordYf, mapa);
-        else if(tipo.equals("A*"))busqueda=new A_estrella(raiz, cordXf, cordYf, mapa);
+        if(tipo.equals("Avara") && heuristica.equals("Heuristica 1")) busqueda=new Avara(raiz, cordXf, cordYf, mapa, 1);
+        else if(tipo.equals("Avara") && heuristica.equals("Heuristica 2"))busqueda=new Avara(raiz, cordXf, cordYf, mapa, 2);
+            else if(tipo.equals("A*") && heuristica.equals("Heuristica 1"))busqueda=new A_estrella(raiz, cordXf, cordYf, mapa, 1);
+                else if(tipo.equals("A*") && heuristica.equals("Heuristica 2"))busqueda=new A_estrella(raiz, cordXf, cordYf, mapa, 2);
         return busqueda;
     }
 }
