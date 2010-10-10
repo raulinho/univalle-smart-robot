@@ -22,6 +22,7 @@ public class NodoEstado {
     public NodoEstado(String ruta, double costo, String operador, int x, int y, int n_items, int n_naves, int nave, int [][]memoria) {
         this.ruta =ruta;
         this.costo = costo;
+        this.costo_estimado = 0.0;
         this.operador = operador;
         this.n_items = n_items;
         this.n_naves = n_naves;
@@ -79,6 +80,11 @@ public class NodoEstado {
     {
         return nave;
     }
+
+    public void setCosto_est(double c) {
+        costo_estimado = c;
+    }
+
     public char ultimoOperador()
     {
         if(operador.length()>0)return operador.charAt(operador.length()-1);

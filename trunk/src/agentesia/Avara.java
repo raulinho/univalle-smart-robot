@@ -11,7 +11,7 @@ package agentesia;
  */
 public class Avara extends Busqueda {
 
-    public Avara(NodoEstado raiz, int cordX, int cordY, int escen[][])
+    public Avara(NodoEstado raiz, int cordX, int cordY, int escen[][], int h)
     {
 
     }

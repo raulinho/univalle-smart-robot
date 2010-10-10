@@ -190,6 +190,7 @@ public abstract class Busqueda {
         double sumaCuadrados=0.0;
         int xItem=0;
         int yItem=0;
+        int[][]map=nodo.getMemoria();
 
         if(nodo.getN_items()==0) 
         {
@@ -197,12 +198,11 @@ public abstract class Busqueda {
             {
                 for(int j=0; j<9; j++)
                 {
-                    if(mapa[i][j]==5)
+                    if(map[i][j]==5)
                     {
                         xItem=i;
                         yItem=j;
                     }
-                    else System.out.println("No se encontro coordenadas del item para aplicar la heuristica");
                 }
             }
             
@@ -215,12 +215,11 @@ public abstract class Busqueda {
                 {
                     for(int j=0; j<9; j++)
                     {
-                        if(mapa[i][j]==6)
+                        if(map[i][j]==6)
                         {
                             xItem=i;
                             yItem=j;
                         }
-                        else System.out.println("No se encontro coordenadas del item para aplicar la heuristica");
                     }
                 }
 
@@ -238,6 +237,10 @@ public abstract class Busqueda {
         return h;
     }
 
+    public double aplicarH2(NodoEstado nodo)
+    {
+        return 0.0;
+    }
     public abstract boolean esMeta(NodoEstado nodo);
 
     public abstract NodoEstado ejecutar ();
