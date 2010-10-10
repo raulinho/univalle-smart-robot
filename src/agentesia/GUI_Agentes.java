@@ -197,17 +197,10 @@ public class GUI_Agentes extends javax.swing.JFrame {
             obj_busqueda=factoria.crearNoInformada(select);
             if(obj_busqueda!=null)
             {
+                long tiempoinicio=System.currentTimeMillis();
                 NodoEstado respuesta = obj_busqueda.ejecutar();
-
-                if(respuesta==null) System.out.println("No se encontró respuesta con "+select);
-                else
-                {
-                    System.out.println("Se encontró respuesta con "+select);
-                    System.out.println("Ruta: "+respuesta.getRuta()+",("+respuesta.getX()+","+respuesta.getY()+")");
-                    System.out.println("Profundidad: "+respuesta.getProfundidadPorOps());
-                    System.out.println("Operadores: "+respuesta.getOperador());
-                    System.out.println("Costo: "+respuesta.getCosto());
-                }
+                long tiempo=System.currentTimeMillis()-tiempoinicio;
+                mostrarResultado(respuesta, select,obj_busqueda.getContNodos(),tiempo);
             }
         } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_jmi_noInformadaActionPerformed
@@ -225,21 +218,30 @@ public class GUI_Agentes extends javax.swing.JFrame {
             obj_busqueda=factoria.crearInformada(select, selectH);
             if(obj_busqueda!=null)
             {
+                long tiempoinicio=System.currentTimeMillis();
                 NodoEstado respuesta = obj_busqueda.ejecutar();
-
-                if(respuesta==null) System.out.println("No se encontró respuesta con "+select);
-                else
-                {
-                    System.out.println("Se encontró respuesta con "+select);
-                    System.out.println("Ruta: "+respuesta.getRuta()+",("+respuesta.getX()+","+respuesta.getY()+")");
-                    System.out.println("Profundidad: "+respuesta.getProfundidadPorOps());
-                    System.out.println("Operadores: "+respuesta.getOperador());
-                    System.out.println("Costo: "+respuesta.getCosto());
-                }
+                long tiempo=System.currentTimeMillis()-tiempoinicio;
+                mostrarResultado(respuesta, select,obj_busqueda.getContNodos(),tiempo);
+                
             }
         } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
 
     }//GEN-LAST:event_jmi_informadaActionPerformed
+
+    private void mostrarResultado(NodoEstado respuesta, String algoritmo, int nodos, long tiempo)
+    {
+        if(respuesta==null) JOptionPane.showMessageDialog(this, "No se encontró respuesta con "+algoritmo,"Respuesta",JOptionPane.ERROR);
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Se encontró respuesta con "+algoritmo+"\n"
+            + "Ruta: "+respuesta.getRuta()+"("+respuesta.getX()+","+respuesta.getY()+")\n"
+            + "Profundidad: "+respuesta.getProfundidadPorOps()+"\n"
+            + "Nodos expandidos: "+nodos+"\n"
+            + "Tiempo: "+tiempo+" ns\n"
+            + "Costo: "+respuesta.getCosto(),"Resultado",JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+    }
 
     /**
     * @param args the command line arguments

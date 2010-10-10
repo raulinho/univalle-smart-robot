@@ -16,13 +16,20 @@ public abstract class Busqueda {
     protected ArrayList<NodoEstado> listaNodos;
     protected int cordXSalida,cordYSalida;
     protected int [][] mapa;
-    
+    //Contador de Nodos expandidos
+    protected int contNodos;
+
     public Busqueda()
     {
+        contNodos=0;
         listaNodos=new ArrayList<NodoEstado>();
     }
 
- 
+    public int getContNodos() {
+        return contNodos;
+    }
+
+    
     //A partir de un operador y la dirección del nuevo nodo en el mapa crea un nodo.
     public NodoEstado crearHijo(NodoEstado padre, String operador, int cordX_hijo, int cordY_hijo)
     {
@@ -179,6 +186,9 @@ public abstract class Busqueda {
                     (operadorHijo=='↓'&& operadorPadre=='↑');
             if(inverso && !lugarDevolvible) hijos.remove(idx);
         }
+
+        //Cuento al nodo expandido
+        contNodos++;
 
         return hijos;
     }
