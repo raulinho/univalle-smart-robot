@@ -15,6 +15,9 @@ import java.util.ArrayList;
 public abstract class Busqueda {
     protected ArrayList<NodoEstado> listaNodos;
     protected int cordXSalida,cordYSalida;
+        //Coordenadas de los items
+    protected int cordXItem1,cordYItem1,cordXItem2,cordYItem2;
+
     protected int [][] mapa;
     //Contador de Nodos expandidos
     protected int contNodos;
@@ -196,59 +199,45 @@ public abstract class Busqueda {
     public double aplicarH1(NodoEstado nodo)
     {
         double h=0.0;
-        double sumaCuadrados=0.0;
-        int xItem=0;
-        int yItem=0;
-        int[][]map=nodo.getMemoria();
-
-        if(nodo.getN_items()==0) 
+        double sumaCuadrados1=0.0;
+        double sumaCuadrados2=0.0;
+        //Si hay item calculo distancia linea recta mas corta a un item
+        if(nodo.getN_items()>0)
         {
-            for(int i=0; i<9; i++)
-            {
-                for(int j=0; j<9; j++)
-                {
-                    if(map[i][j]==5)
-                    {
-                        xItem=i;
-                        yItem=j;
-                    }
-                }
-            }
-            
-            sumaCuadrados=Math.pow((double)(xItem-nodo.getX()), 2.0) + Math.pow((double)(yItem-nodo.getY()), 2.0);
-            h=Math.abs(Math.sqrt(sumaCuadrados)/2);
+            sumaCuadrados1=Math.pow((double)(cordXItem1-nodo.getX()), 2.0) + Math.pow((double)(cordYItem1-nodo.getY()), 2.0);
+            sumaCuadrados2=Math.pow((double)(cordXItem2-nodo.getX()), 2.0) + Math.pow((double)(cordYItem2-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(Math.min(sumaCuadrados1, sumaCuadrados2))/2);
         }
-        else if (nodo.getN_items()==1)
-            {
-                for(int i=0; i<9; i++)
-                {
-                    for(int j=0; j<9; j++)
-                    {
-                        if(map[i][j]==6)
-                        {
-                            xItem=i;
-                            yItem=j;
-                        }
-                    }
-                }
-
-                sumaCuadrados=Math.pow((double)(xItem-nodo.getX()), 2.0) + Math.pow((double)(yItem-nodo.getY()), 2.0);
-                h=Math.abs(Math.sqrt(sumaCuadrados)/2);
-            }
-            else
-            {
-                xItem=cordXSalida;
-                yItem=cordYSalida;
-                sumaCuadrados=Math.pow((double)(xItem-nodo.getX()), 2.0) + Math.pow((double)(yItem-nodo.getY()), 2.0);
-                h=Math.abs(Math.sqrt(sumaCuadrados)/2);
-            }
+        //sino calculo distancia linea recta a la salida
+        else
+        {
+            sumaCuadrados1=Math.pow((double)(cordXSalida-nodo.getX()), 2.0) + Math.pow((double)(cordYSalida-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(sumaCuadrados1)/2);
+        }
             
         return h;
     }
 
     public double aplicarH2(NodoEstado nodo)
     {
-        return 0.0;
+        double h=0.0;
+        double sumaCuadrados1=0.0;
+        double sumaCuadrados2=0.0;
+        //CON HEURISTICA PICHA
+        //TODO poner en h2 manhattan para verificar los nodos expandidos
+        if(nodo.getN_items()>0)
+        {
+            sumaCuadrados1=Math.pow((double)(cordXItem1-nodo.getX()), 2.0) + Math.pow((double)(cordYItem1-nodo.getY()), 2.0);
+            sumaCuadrados2=Math.pow((double)(cordXItem2-nodo.getX()), 2.0) + Math.pow((double)(cordYItem2-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(Math.min(sumaCuadrados1, sumaCuadrados2))/200);
+        }
+        else
+        {
+            sumaCuadrados1=Math.pow((double)(cordXSalida-nodo.getX()), 2.0) + Math.pow((double)(cordYSalida-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(sumaCuadrados1)/200);
+        }
+
+        return h;
     }
     public abstract boolean esMeta(NodoEstado nodo);
 

@@ -21,13 +21,7 @@ public class Amplitud extends Busqueda {
         cordXSalida=cordXf;
         cordYSalida=cordYf;
         nodoraiz=raiz;
-        for(int idy=0;idy<10;idy++)
-        {
-            for(int idx=0;idx<10;idx++)
-            {
-                this.mapa[idx][idy]=mapa[idx][idy];
-            }
-        }
+        this.mapa=mapa.clone();
     }
 
      public NodoEstado ejecutar()
