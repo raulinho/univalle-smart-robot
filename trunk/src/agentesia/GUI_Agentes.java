@@ -237,7 +237,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
             + "Ruta: "+respuesta.getRuta()+"("+respuesta.getX()+","+respuesta.getY()+")\n"
             + "Profundidad: "+respuesta.getProfundidadPorOps()+"\n"
             + "Nodos expandidos: "+nodos+"\n"
-            + "Tiempo: "+tiempo+" ns\n"
+            + "Tiempo: "+tiempo+" ms\n"
             + "Costo: "+respuesta.getCosto(),"Resultado",JOptionPane.INFORMATION_MESSAGE);
         }
         

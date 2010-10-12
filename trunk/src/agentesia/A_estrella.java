@@ -9,7 +9,7 @@ import java.util.PriorityQueue;
 import java.util.ArrayList;
 /**
  *
- * @author Administrator
+ * @author Gina
  */
 public class A_estrella extends Busqueda{
 
@@ -26,61 +26,53 @@ public class A_estrella extends Busqueda{
         comparador= new ComparadorEstadosInformada();
         colaPrioridad= new PriorityQueue(1,comparador);
         mapa=escen.clone();
+        for(int idx=0;idx<10;idx++)
+        {
+            for(int idy=0;idy<10;idy++)
+            {
+                if(mapa[idx][idy]==6||mapa[idx][idy]==5)
+                {
+                    if(cordXItem1==0 && cordYItem1==0)
+                    {
+                        cordXItem1=idx;
+                        cordYItem1=idy;
+                    }else
+                    {
+                        cordXItem2=idx;
+                        cordYItem2=idy;
+                    }
+                }
+            }
+        }
         tipoHeu=h;
     }
 
     public NodoEstado ejecutar()
     {
         double h;
-        if(tipoHeu==1)
+        
+        colaPrioridad.add(nodoRaiz);
+
+        while(!colaPrioridad.isEmpty())
         {
-            colaPrioridad.add(nodoRaiz);
+            NodoEstado nodoActual, nodoTmp;
+            nodoActual= colaPrioridad.poll();
 
-            while(!colaPrioridad.isEmpty())
+            if (esMeta(nodoActual)) return nodoActual;
+            else
             {
-                NodoEstado nodo, n1;
-                nodo= colaPrioridad.poll();
+                ArrayList<NodoEstado> nodosHijos= aplicarOperadores(nodoActual);
 
-                if (esMeta(nodo)) return nodo;
-                else
+                for(int x=0; x<nodosHijos.size(); x++)
                 {
-                    ArrayList<NodoEstado> nodosHijos= aplicarOperadores(nodo);
-
-                    for(int x=0; x<nodosHijos.size(); x++)
-                    {
-                        n1 = nodosHijos.get(x);
-                        h = aplicarH1(n1);
-                        n1.setCosto_est(n1.getCosto()+h);
-                        colaPrioridad.add(nodosHijos.get(x));
-                    }
+                    nodoTmp = nodosHijos.get(x);
+                    //dependiendo de la heuristica a aplicar asigno h
+                    if(tipoHeu==1) h = aplicarH1(nodoTmp);
+                    else h= aplicarH2(nodoTmp);
+                    nodoTmp.setCosto_est(nodoTmp.getCosto()+h);
+                    colaPrioridad.add(nodosHijos.get(x));
                 }
             }
-            return null;
-        }
-        else if (tipoHeu==2)
-        {
-            colaPrioridad.add(nodoRaiz);
-
-            while(!colaPrioridad.isEmpty())
-            {
-                NodoEstado nodo, n1;
-                nodo= colaPrioridad.poll();
-
-                if (esMeta(nodo)) return nodo;
-                else
-                {
-                    ArrayList<NodoEstado> nodosHijos= aplicarOperadores(nodo);
-
-                    for(int x=0; x<nodosHijos.size(); x++)
-                    {
-                        n1 = nodosHijos.get(x);
-                        h = aplicarH2(n1);
-                        n1.setCosto_est(n1.getCosto()+h);
-                        colaPrioridad.add(nodosHijos.get(x));
-                    }
-                }
-            }
-            return null;
         }
         return null;
     }

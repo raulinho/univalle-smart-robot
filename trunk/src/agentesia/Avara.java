@@ -7,7 +7,7 @@ package agentesia;
 
 /**
  *
- * @author Administrator
+ * @author Gina
  */
 public class Avara extends Busqueda {
 
