@@ -67,6 +67,9 @@ public class Profundidad extends Busqueda{
                 count++;
             }
         }
+
+        if (count>2) return true;
+
         //TODO Discutir cual será la tolerancia a ciclos que utilizaremos.
         //tolerancia de aparición de un mismo nodo 1 por ahora
         if (count>1) return true;

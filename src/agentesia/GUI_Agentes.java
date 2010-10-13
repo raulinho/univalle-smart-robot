@@ -127,7 +127,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
             f_escenario=jfc_selectorEscenario.getSelectedFile();
             int [][] escen=new int[10][10];
             int [][] memoria=new int [10][10];
-            int contN=0,contI=0,cordXi=0,cordYi=0,cordXf=0,cordYf=0;
+            int contN=0,contI=0,cordXf=0,cordYf=0;
 
             try {
                 Scanner sc = new Scanner(f_escenario);
@@ -143,8 +143,8 @@ public class GUI_Agentes extends javax.swing.JFrame {
                     ///si es inicio
                     if(num==2)
                     {
-                        cordXi=column;
-                        cordYi=line;
+                        cordxI=column;
+                        cordyI=line;
                     }
                     //Salida
                     else if(num==3)
@@ -181,8 +181,9 @@ public class GUI_Agentes extends javax.swing.JFrame {
                 Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
             }
             obj_escenario.paintEscenario(escen);
+            obj_escenario.pintarRobot(cordxI, cordyI, obj_escenario.getGraphics());
             //Para la nueva estructura
-            NodoEstado raiz=new NodoEstado("", 0, "", cordXi, cordYi, contI, contN, 0, memoria);
+            NodoEstado raiz=new NodoEstado("", 0, "", cordxI, cordyI, contI, contN, 0, memoria);
             factoria=new FactoriaBusqueda(raiz, cordXf, cordYf,escen);
         }
     }//GEN-LAST:event_jmi_cargaEscenarioActionPerformed
@@ -199,6 +200,18 @@ public class GUI_Agentes extends javax.swing.JFrame {
             {
                 long tiempoinicio=System.currentTimeMillis();
                 NodoEstado respuesta = obj_busqueda.ejecutar();
+
+                if(respuesta==null) System.out.println("No se encontró respuesta con "+select);
+                else
+                {
+                    System.out.println("Se encontró respuesta con "+select);
+                    System.out.println("Ruta: "+respuesta.getRuta()+",("+respuesta.getX()+","+respuesta.getY()+")");
+                    System.out.println("Profundidad: "+respuesta.getProfundidadPorOps());
+                    System.out.println("Operadores: "+respuesta.getOperador());
+                    System.out.println("Costo: "+respuesta.getCosto());
+                    obj_escenario.mostrarRuta(respuesta, cordxI, cordyI);
+                }
+
                 long tiempo=System.currentTimeMillis()-tiempoinicio;
                 mostrarResultado(respuesta, select,obj_busqueda.getContNodos(),tiempo);
             }
@@ -270,4 +283,5 @@ public class GUI_Agentes extends javax.swing.JFrame {
     public static final int ancho=601;
     public static final int alto=601;
     private FactoriaBusqueda factoria;
+    private int cordxI,cordyI=0;
 }
