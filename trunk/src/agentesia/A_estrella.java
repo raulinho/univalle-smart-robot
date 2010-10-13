@@ -30,7 +30,7 @@ public class A_estrella extends Busqueda{
         {
             for(int idy=0;idy<10;idy++)
             {
-                if(mapa[idx][idy]==6||mapa[idx][idy]==5)
+                if(mapa[idx][idy]==6)
                 {
                     if(cordXItem1==0 && cordYItem1==0)
                     {
@@ -41,6 +41,14 @@ public class A_estrella extends Busqueda{
                         cordXItem2=idx;
                         cordYItem2=idy;
                     }
+                }else if(mapa[idx][idy]==4)
+                {
+                    cordXNave1=idx;
+                    cordYNave1=idy;
+                }else if(mapa[idx][idy]==5)
+                {
+                    cordXNave2=idx;
+                    cordYNave2=idy;
                 }
             }
         }
