@@ -17,6 +17,8 @@ public abstract class Busqueda {
     protected int cordXSalida,cordYSalida;
         //Coordenadas de los items
     protected int cordXItem1,cordYItem1,cordXItem2,cordYItem2;
+    //Coordenadas de las naves
+    protected int cordXNave1,cordYNave1,cordXNave2,cordYNave2;
 
     protected int [][] mapa;
     //Contador de Nodos expandidos
@@ -199,14 +201,22 @@ public abstract class Busqueda {
     public double aplicarH1(NodoEstado nodo)
     {
         double h=0.0;
+        //sumaAUnItem
         double sumaCuadrados1=0.0;
+        //sumaAOtroItem
         double sumaCuadrados2=0.0;
+        //sumaAnave1
+        double sumaCuadrados3=0.0;
+        //suma a nave2
+        double sumaCuadrados4=0.0;
         //Si hay item calculo distancia linea recta mas corta a un item
         if(nodo.getN_items()>0)
         {
             sumaCuadrados1=Math.pow((double)(cordXItem1-nodo.getX()), 2.0) + Math.pow((double)(cordYItem1-nodo.getY()), 2.0);
             sumaCuadrados2=Math.pow((double)(cordXItem2-nodo.getX()), 2.0) + Math.pow((double)(cordYItem2-nodo.getY()), 2.0);
-            h=Math.abs(Math.sqrt(Math.min(sumaCuadrados1, sumaCuadrados2))/2);
+            sumaCuadrados3=Math.pow((double)(cordXNave1-nodo.getX()), 2.0) + Math.pow((double)(cordYNave1-nodo.getY()), 2.0);
+            sumaCuadrados4=Math.pow((double)(cordXNave2-nodo.getX()), 2.0) + Math.pow((double)(cordYNave2-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(Math.min(Math.min(sumaCuadrados1, sumaCuadrados2),Math.min(sumaCuadrados3,sumaCuadrados4)))/2);
         }
         //sino calculo distancia linea recta a la salida
         else
@@ -229,7 +239,7 @@ public abstract class Busqueda {
         {
             sumaCuadrados1=Math.pow((double)(cordXItem1-nodo.getX()), 2.0) + Math.pow((double)(cordYItem1-nodo.getY()), 2.0);
             sumaCuadrados2=Math.pow((double)(cordXItem2-nodo.getX()), 2.0) + Math.pow((double)(cordYItem2-nodo.getY()), 2.0);
-            h=Math.abs(Math.sqrt(Math.min(sumaCuadrados1, sumaCuadrados2))/200);
+            h=Math.abs(Math.sqrt(Math.min(sumaCuadrados1, sumaCuadrados2))/2);
         }
         else
         {
