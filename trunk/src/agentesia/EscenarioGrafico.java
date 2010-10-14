@@ -24,7 +24,7 @@ import javax.imageio.ImageIO;
 public class EscenarioGrafico extends Canvas{
     private int ancho;
     private int alto;
-    private BufferedImage bi_fondo,img_nave1,campo,robot;
+    private BufferedImage bi_fondo,img_nave1,robot,campo;
     private boolean flagEscenario;
     private int[][]mapa;
     private MediaTracker track;
