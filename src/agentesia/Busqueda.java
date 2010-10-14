@@ -1,3 +1,4 @@
+//archivoViejoConModificación
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -34,7 +35,7 @@ public abstract class Busqueda {
         return contNodos;
     }
 
-    
+
     //A partir de un operador y la dirección del nuevo nodo en el mapa crea un nodo.
     public NodoEstado crearHijo(NodoEstado padre, String operador, int cordX_hijo, int cordY_hijo)
     {
@@ -61,8 +62,17 @@ public abstract class Busqueda {
             return null;
         }
         //Memoria para saber que lugares ya visite Solo la utilizo para saber si ya recogí un item.
-        int [][] memoria=padre.getMemoria().clone();
-        
+        int [][] memoriaPadre=padre.getMemoria();
+        int [][] memoria = new int [10][10];
+
+        for (int idy=0;idy<10;idy++)
+        {
+            for (int idx=0;idx<10;idx++)
+            {
+                memoria[idx][idy]=memoriaPadre[idx][idy];
+            }
+        }
+
         //Si en el mapa es libre
         if(memoria[cordX_hijo][cordY_hijo]==0 || memoria[cordX_hijo][cordY_hijo]==3)
         {
@@ -111,6 +121,7 @@ public abstract class Busqueda {
                 costo=padre.getCosto()+1;
                 hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items()-1, padre.getN_naves(), 0, memoria);
             }
+            //escenario[x][yN]=0;
         }
         //Si en el mapa es campo
         else if(memoria[cordX_hijo][cordY_hijo]==7)
@@ -186,61 +197,50 @@ public abstract class Busqueda {
 
         return hijos;
     }
-    
+
     //Aplica la Heuristica 1 (funcion por partes para la distancia en linea recta al punto deseado)
     public double aplicarH1(NodoEstado nodo)
     {
+        int [][]matriz=nodo.getMemoria().clone();
+        int xActual,yActual;
+        xActual=nodo.getX();
+        yActual=nodo.getY();
         double h=0.0;
-        double htmp=0.0;
-        int [][]memoria=nodo.getMemoria().clone();
-        if(nodo.getN_items()>0)
+
+        for(int idy=0;idy<10;idy++)
         {
-            for(int idy=0;idy<10;idy++)
+            for(int idx=0;idx<10;idx++)
             {
-                for(int idx=0;idx<10;idx++)
+                if(matriz[idx][idy]==6||matriz[idx][idy]==3)
                 {
-                    if(memoria[idx][idy]==6)
-                    {
-                        htmp=Math.abs(nodo.getX()-idx)+Math.abs(nodo.getY()-idy);
-                        h=h+htmp;
-                    }
+                    h=h+Math.abs(idx-xActual)+Math.abs(idy-yActual);
+                    xActual=idx;
+                    yActual=idy;
                 }
             }
         }
-
-        else
-        {
-            h=Math.abs(cordXSalida-nodo.getX())+Math.abs(cordYSalida-nodo.getY());
-        }
         h=h/2;
-
         return h;
     }
 
     public double aplicarH2(NodoEstado nodo)
     {
-         double h=0.0;
-        double sumaCuadrados=Double.MAX_VALUE;
-        double tmpsuma=0.0;
-        int [][] memoria=nodo.getMemoria();
-        for (int idx=0;idx<10;idx++)
+        double h=0.0;
+        double sumaCuadrados1=0.0;
+        double sumaCuadrados2=0.0;
+        //CON HEURISTICA PICHA
+        //TODO poner en h2 manhattan para verificar los nodos expandidos
+        if(nodo.getN_items()>0)
         {
-            for(int idy=0; idy <10; idy++)
-            {
-                if(memoria[idx][idy]==6)
-                {
-                    tmpsuma=Math.pow((double)(idx-nodo.getX()), 2.0) + Math.pow((double)(idy-nodo.getY()), 2.0);
-                    if(tmpsuma<sumaCuadrados)sumaCuadrados=tmpsuma;
-                }
-
-                if(memoria[idx][idy]==3&&nodo.getN_items()==0)
-                {
-                    System.out.println("entre condicion para poder salir de esta vaina");
-                    sumaCuadrados=Math.pow((double)(idx-nodo.getX()), 2.0)+ Math.pow((double)(idy-nodo.getY()), 2.0);
-                }
-            }
+            sumaCuadrados1=Math.pow((double)(cordXItem1-nodo.getX()), 2.0) + Math.pow((double)(cordYItem1-nodo.getY()), 2.0);
+            sumaCuadrados2=Math.pow((double)(cordXItem2-nodo.getX()), 2.0) + Math.pow((double)(cordYItem2-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(Math.min(sumaCuadrados1, sumaCuadrados2))/2);
         }
-        h=Math.abs(Math.sqrt(sumaCuadrados)/200);
+        else
+        {
+            sumaCuadrados1=Math.pow((double)(cordXSalida-nodo.getX()), 2.0) + Math.pow((double)(cordYSalida-nodo.getY()), 2.0);
+            h=Math.abs(Math.sqrt(sumaCuadrados1)/200);
+        }
 
         return h;
     }
