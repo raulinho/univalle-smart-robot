@@ -12,6 +12,7 @@ import java.awt.MediaTracker;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,13 +25,20 @@ import javax.imageio.ImageIO;
 public class EscenarioGrafico extends Canvas{
     private int ancho;
     private int alto;
-    private BufferedImage bi_fondo,img_nave1,robot,campo;
+    private BufferedImage bi_fondo,img_nave1,robot;
+    private BufferedImage [] campo;
     private boolean flagEscenario;
     private int[][]mapa;
     private MediaTracker track;
+    private int posRobotX,posRobotY;
+    private int gifCampo;
+    private ArrayList<Campo>campos;
 
     public EscenarioGrafico(int alto, int ancho)
     {
+        campos=new ArrayList<Campo>();
+        posRobotX=0;
+        posRobotY=0;
         mapa=new int[10][10];
         flagEscenario=false;
         this.ancho=ancho;
@@ -39,9 +47,59 @@ public class EscenarioGrafico extends Canvas{
         //cargando Imagen de fondo
         bi_fondo=cargarImagen("img/Escenario.jpg");
         img_nave1=cargarImagen("img/nave1.gif");
-        campo=cargarImagen("img/campoMagnetico1.gif");
+       // campo=cargarImagen("img/campoMagnetico1.gif");
         robot=cargarImagen("img/robotC.png");
        // this.setIgnoreRepaint(true);
+    }
+    public void limpiarBuffer()
+    {
+        bi_fondo=cargarImagen("img/Escenario.jpg");
+    }
+
+    public void setPosRobot(int x, int y)
+    {
+        this.posRobotX=x;
+        this.posRobotY=y;
+    }
+
+    public void pintarRobot()
+    {
+        this.getGraphics().drawImage(robot, posRobotX*60, posRobotY*60, this);
+    }
+
+    public void pintarRobot(int xVieja,int yVieja)
+    {
+        int x,y,xfin,yfin;
+        x=xVieja*60;
+        y=yVieja*60;
+        xfin=posRobotX*60;
+        yfin=posRobotY*60;
+        BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+        Graphics graph=buffer.getGraphics();
+        boolean puedo=true;
+        while(puedo)
+        {
+            if(x<xfin)x=x+10;
+            else if(x>xfin)x=x-10;
+            else if(y>yfin)y=y-10;
+            else if(y<yfin)y=y+10;
+            else if(y==yfin && x==xfin)
+            {
+                break;
+            }
+            graph.drawImage(bi_fondo, 0, 0, this);
+            graph.drawImage(robot, x, y, this);
+            Campo campito;
+            for(int idx=0;idx<campos.size();idx++)
+            {
+                campito=campos.get(idx);
+                campito.animarCampo();
+                campito.pintarCampo(graph, this);
+            }
+            this.getGraphics().drawImage(buffer, 0, 0, this);
+            espera();
+        }
+
     }
 
     public final BufferedImage cargarImagen(String nombre)
@@ -63,28 +121,23 @@ public class EscenarioGrafico extends Canvas{
     public void paint(Graphics grphcs) {
         super.paint(grphcs);
         //Pintando imagen cargada
+        limpiarBuffer();
         grphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
-        if(flagEscenario)paintEscenario(this.mapa);
+        if(flagEscenario)
+        {
+            paintEscenario(this.mapa);
+            pintarRobot();
+        }
     }
 
     @Override
     public void repaint() {
-        super.repaint();
-        Graphics graph=getGraphics();
-        graph.drawImage(bi_fondo, 0, 0,alto,ancho,this);
-        if(flagEscenario)paintEscenario(this.mapa);
-        //paint(this.getGraphics());
+        this.paint(this.getGraphics());
     }
-
-    /*@Override
-    public void update(Graphics grphcs)
-    {
-        paint(grphcs);
-    }*/
 
     public void paintEscenario(int[][]mapa)
     {
-        Graphics graphcs=this.getGraphics();
+        Graphics graphcs=bi_fondo.getGraphics();
         //graphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
         int cordx=0;
         int cordy=0;
@@ -138,15 +191,19 @@ public class EscenarioGrafico extends Canvas{
                 //CampoElectromagnetico
                 case 7:
                     graphcs.setColor(Color.YELLOW);
+                    Campo campito=new Campo(cordx,cordy);
+                    campito.animarCampo();
+                    campito.pintarCampo(graphcs, this);
+                    campos.add(campito);
                     //graphcs.drawString("(¬¬)", cordx+20, cordy+20);
-                    graphcs.drawImage(campo, cordx, cordy, this);
-                    campo.flush();
+                   // graphcs.drawImage(campo, cordx, cordy, this);
                 break;
                 }
                 graphcs.setColor(Color.DARK_GRAY);
 
             }
         }
+        this.getGraphics().drawImage(bi_fondo, 0, 0, this);
         flagEscenario=true;
     }
 
@@ -156,66 +213,59 @@ public class EscenarioGrafico extends Canvas{
         Scanner ruta= new Scanner(resp.getOperador());
         ruta.useDelimiter(",");
         char op;
-        //Almacena el valor de la coordenada en el mapa para restauracion
-        int ant=0;
         while(ruta.hasNext())
         {
-            //restauro valor anterior antes de determinar el sgte punto
-            this.mapa[cordx][cordy]=ant;
+            //Graphics graph=bi_fondo.getGraphics();
+            
+            this.getGraphics().drawImage(bi_fondo, 0, 0, this);
             op=ruta.next().charAt(0);
-            System.out.println("entre while "+op);
             //Dependiendo del operador incremento o decremento la coordenada correspondiente para determinar el lugar del mapa al que me debo dirigir
-                    switch (op)
-                    {
-                        case '↑':
-                        {
-                            cordy--;
-                            espera();
-                            break;
-                        }
-                        case '→':
-                        {
-                            cordx++;
-                            espera();
-                            break;
-                        }
-                        case '↓':
-                        {
-                            cordy++;
-                            espera();
-                            break;
-                        }
-                        case '←':
-                        {
-                            cordx--;
-                            espera();
-                            break;
-                        }
-                    }
-                    //guardo el valor que esta en la coordenada antes de colocar el robot
-                    ant=this.mapa[cordx][cordy];
-                    //se coloca el dos para que el repaint pinte el robot en la coordenada
-                    this.mapa[cordx][cordy]=2;
-                    repaint();
+            moverRobot(op);
         }
     }
+
+   //Con un operador determina la nueva posición del robot
+   public void moverRobot( char op)
+   {
+       int xVieja=posRobotX;
+       int yVieja=posRobotY;
+        switch (op)
+        {
+            case '↑':
+            {
+                posRobotY--;
+                break;
+            }
+            case '→':
+            {
+                posRobotX++;
+                break;
+            }
+            case '↓':
+            {
+                posRobotY++;
+                break;
+            }
+            case '←':
+            {
+                posRobotX--;
+                break;
+            }
+        }
+
+       pintarRobot(xVieja, yVieja);
+   }
 
    //Espera entre el pintado de cada movimiento del robot
    public void espera()
    {
        try
        {
-           Thread.sleep(500);
+           Thread.sleep(100);
        }
        catch(InterruptedException e)
        {
            
        }
    }
-
-   public void pintarRobot(int cordx, int cordy, Graphics graph)
-   {
-       graph.drawImage(robot, cordx*60, cordy*60, this);
-   }
-
 }

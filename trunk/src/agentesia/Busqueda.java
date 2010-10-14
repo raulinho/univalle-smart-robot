@@ -191,33 +191,29 @@ public abstract class Busqueda {
     public double aplicarH1(NodoEstado nodo)
     {
         double h=0.0;
-        double sumaCuadrados=Double.MAX_VALUE;
-        double tmpsuma=0.0;
-        int [][] memoria=nodo.getMemoria();
+        double htmp=0.0;
+        int [][]memoria=nodo.getMemoria().clone();
         if(nodo.getN_items()>0)
         {
-            for (int idx = 0; idx < 10; idx++)
+            for(int idy=0;idy<10;idy++)
             {
-                for(int idy=0; idy <10; idy++)
+                for(int idx=0;idx<10;idx++)
                 {
                     if(memoria[idx][idy]==6)
                     {
-                        tmpsuma=Math.abs(idx-nodo.getX()) + Math.abs(idy-nodo.getY());
-                        if(tmpsuma<sumaCuadrados){
-                        System.out.println("Desde"+nodo.getX()+","+nodo.getY()+" hacia: "+idx+","+idy+", "+tmpsuma+" numero de item: "+ nodo.getN_items());
-                        sumaCuadrados=tmpsuma;
+                        htmp=Math.abs(nodo.getX()-idx)+Math.abs(nodo.getY()-idy);
+                        h=h+htmp;
                     }
-                }
                 }
             }
         }
 
         else
         {
-                    System.out.println("entre condicion para poder salir de esta vaina");
-                    sumaCuadrados=Math.abs(cordXSalida-nodo.getX())+ Math.abs(cordYSalida-nodo.getY());
+            h=Math.abs(cordXSalida-nodo.getX())+Math.abs(cordYSalida-nodo.getY());
         }
-        h=sumaCuadrados/2;
+        h=h/2;
+
         return h;
     }
 

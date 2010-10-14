@@ -40,6 +40,7 @@ public class A_estrella extends Busqueda{
         {
             NodoEstado nodoActual, nodoTmp;
             nodoActual= colaPrioridad.poll();
+            System.out.println("CostoEstimado= "+nodoActual.getCosto_est()+" Items: "+nodoActual.getN_items());
 
             if (esMeta(nodoActual)) return nodoActual;
             else
@@ -52,7 +53,7 @@ public class A_estrella extends Busqueda{
                     //dependiendo de la heuristica a aplicar asigno h
                     if(tipoHeu==1) h = aplicarH1(nodoTmp);
                     else h= aplicarH2(nodoTmp);
-                    nodoTmp.setCosto_est(nodoTmp.getCosto()+h);
+                    nodoTmp.setCosto_est(h+nodoTmp.getCosto());
                     colaPrioridad.add(nodoTmp);
                 }
             }

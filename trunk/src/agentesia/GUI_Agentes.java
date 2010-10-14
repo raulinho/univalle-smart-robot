@@ -31,6 +31,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
         initComponents();
         this.setVisible(true);
         jfc_selectorEscenario.setCurrentDirectory(new File("src/escenarios/"));
+        this.setIgnoreRepaint(true);
         returnValJFC=0;
     }
 
@@ -180,8 +181,10 @@ public class GUI_Agentes extends javax.swing.JFrame {
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
             }
+            obj_escenario.limpiarBuffer();
             obj_escenario.paintEscenario(escen);
-            obj_escenario.pintarRobot(cordxI, cordyI, obj_escenario.getGraphics());
+            obj_escenario.setPosRobot(cordxI, cordyI);
+            obj_escenario.pintarRobot();
             //Para la nueva estructura
             NodoEstado raiz=new NodoEstado("", 0, "", cordxI, cordyI, contI, contN, 0, memoria);
             factoria=new FactoriaBusqueda(raiz, cordXf, cordYf,escen);
@@ -209,10 +212,10 @@ public class GUI_Agentes extends javax.swing.JFrame {
                     System.out.println("Profundidad: "+respuesta.getProfundidadPorOps());
                     System.out.println("Operadores: "+respuesta.getOperador());
                     System.out.println("Costo: "+respuesta.getCosto());
-                    obj_escenario.mostrarRuta(respuesta, cordxI, cordyI);
                 }
 
                 long tiempo=System.currentTimeMillis()-tiempoinicio;
+                obj_escenario.mostrarRuta(respuesta, cordxI, cordyI);
                 mostrarResultado(respuesta, select,obj_busqueda.getContNodos(),tiempo);
             }
         } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
