@@ -35,12 +35,12 @@ public class A_estrella extends Busqueda{
         double h;
         
         colaPrioridad.add(nodoRaiz);
-
+        
         while(!colaPrioridad.isEmpty())
         {
             NodoEstado nodoActual, nodoTmp;
             nodoActual= colaPrioridad.poll();
-            System.out.println("CostoEstimado= "+nodoActual.getCosto_est()+" Items: "+nodoActual.getN_items());
+
 
             if (esMeta(nodoActual)) return nodoActual;
             else
