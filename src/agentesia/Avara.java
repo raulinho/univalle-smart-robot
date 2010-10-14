@@ -27,11 +27,13 @@ public class Avara extends Busqueda {
         comparador= new ComparadorEstadosInformada();
         colaPrioridad= new PriorityQueue(1,comparador);
         mapa=escen.clone();
+
+        //Ciclo que recorre el ambiente y me provee las coordenadas de los items
         for(int idx=0;idx<10;idx++)
         {
             for(int idy=0;idy<10;idy++)
             {
-                if(mapa[idx][idy]==6||mapa[idx][idy]==5)
+                if(mapa[idx][idy]==6)
                 {
                     if(cordXItem1==0 && cordYItem1==0)
                     {
@@ -48,22 +50,68 @@ public class Avara extends Busqueda {
         tipoHeu=h;
     }
 
+   @Override
+    public ArrayList<NodoEstado> aplicarOperadores(NodoEstado nodo)
+    {
+        int x=nodo.getX();
+        int y=nodo.getY();
+        ArrayList <NodoEstado> hijos =new ArrayList<NodoEstado>();
+        if(y>0)
+        {
+            int yN=y-1;
+            String operador="↑";
+            NodoEstado hijo= crearHijo(nodo, operador, x, yN);
+            if (hijo!=null)hijos.add(hijo);
+        }
+        if(x<9)
+        {
+            int xN=x+1;
+            String operador="→";
+            NodoEstado hijo= crearHijo(nodo, operador, xN,y);
+            if (hijo!=null)hijos.add(hijo);
+        }
+        if(y<9)
+        {
+            int yN=y+1;
+            String operador="↓";
+            NodoEstado hijo= crearHijo(nodo, operador, x, yN);
+            if (hijo!=null)hijos.add(hijo);
+        }
+        if(x>0)
+        {
+            int xN=x-1;
+            String operador="←";
+            NodoEstado hijo= crearHijo(nodo, operador, xN, y);
+            if (hijo!=null)hijos.add(hijo);
+        }
+        //Cuento al nodo expandido
+        contNodos++;
+
+        return hijos;
+    }
+
     public NodoEstado ejecutar()
     {
         double h;
 
         colaPrioridad.add(nodoRaiz);
 
-       NODO:while(!colaPrioridad.isEmpty())
+      while(!colaPrioridad.isEmpty())
         {
             NodoEstado nodoActual, nodoTmp;
             nodoActual= colaPrioridad.poll();
+            colaPrioridad.clear();
+            System.out.println("Nodo Actual: "+nodoActual.getX()+","+nodoActual.getY());
+            System.out.println("Heurisitica del nodo: "+nodoActual.getCosto_est());
 
             //Detecto el nodo como un ciclo y salto si sí es luego verifico meta
             if(esClico(nodoActual))
             {
-                System.out.println("Es Ciclo: "+nodoActual.getOperador());
-                continue NODO;
+                System.out.println("Es Ciclo:"+nodoActual.getX()+","+nodoActual.getY()+" \n"+nodoActual.getOperador());
+                System.out.println("Numero items en el mapa: " + nodoActual.getN_items());
+                //int [][]map = nodoActual.getMemoria().clone();
+                //System.out.println("Numero en posicion del primer item: " + map[cordXItem1][cordYItem1]);
+                return nodoActual;
             }
             else if (esMeta(nodoActual)) return nodoActual;
                 else
@@ -73,11 +121,12 @@ public class Avara extends Busqueda {
                     for(int x=0; x<nodosHijos.size(); x++)
                     {
                         nodoTmp = nodosHijos.get(x);
+                        //colaPrioridad.clear();
                         //dependiendo de la heuristica a aplicar asigno h
                         if(tipoHeu==1) h = aplicarH1(nodoTmp);
                         else h= aplicarH2(nodoTmp);
                         nodoTmp.setCosto_est(h);
-                        colaPrioridad.add(nodosHijos.get(x));
+                        colaPrioridad.add(nodoTmp);
                     }
                 }
         }
