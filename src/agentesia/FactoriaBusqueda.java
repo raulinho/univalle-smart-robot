@@ -41,19 +41,19 @@ public class FactoriaBusqueda {
     public Busqueda crearNoInformada (String tipo)
     {
         Busqueda busqueda=null;
-        if(tipo.equals("Amplitud"))busqueda=new Amplitud(raiz, cordXf, cordYf, mapa);
-        else if(tipo.equals("Costo"))busqueda=new Costo(raiz, cordXf, cordYf, mapa);
-        else if(tipo.equals("Profundidad"))busqueda=new Profundidad(raiz,cordXf,cordYf,mapa);
+        if(tipo.equals("Amplitud"))busqueda=new Amplitud(raiz.clone(), cordXf, cordYf, mapa);
+        else if(tipo.equals("Costo"))busqueda=new Costo(raiz.clone(), cordXf, cordYf, mapa);
+        else if(tipo.equals("Profundidad"))busqueda=new Profundidad(raiz.clone(),cordXf,cordYf,mapa);
         return busqueda;
     }
 
     public Busqueda crearInformada (String tipo, String heuristica)
     {
         Busqueda busqueda=null;
-        if(tipo.equals("Avara") && heuristica.equals("Heuristica 1")) busqueda=new Avara(raiz, cordXf, cordYf, mapa, 1);
-        else if(tipo.equals("Avara") && heuristica.equals("Heuristica 2"))busqueda=new Avara(raiz, cordXf, cordYf, mapa, 2);
-            else if(tipo.equals("A*") && heuristica.equals("Heuristica 1"))busqueda=new A_estrella(raiz, cordXf, cordYf, mapa, 1);
-                else if(tipo.equals("A*") && heuristica.equals("Heuristica 2"))busqueda=new A_estrella(raiz, cordXf, cordYf, mapa, 2);
+        if(tipo.equals("Avara") && heuristica.equals("Heuristica 1")) busqueda=new Avara(raiz.clone(), cordXf, cordYf, mapa, 1);
+        else if(tipo.equals("Avara") && heuristica.equals("Heuristica 2"))busqueda=new Avara(raiz.clone(), cordXf, cordYf, mapa, 2);
+            else if(tipo.equals("A*") && heuristica.equals("Heuristica 1"))busqueda=new A_estrella(raiz.clone(), cordXf, cordYf, mapa, 1);
+                else if(tipo.equals("A*") && heuristica.equals("Heuristica 2"))busqueda=new A_estrella(raiz.clone(), cordXf, cordYf, mapa, 2);
         return busqueda;
     }
 }

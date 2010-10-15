@@ -85,4 +85,11 @@ public class NodoEstado {
         if(operador.length()>0)return operador.charAt(operador.length()-1);
         else return ' ';
     }
+
+    @Override
+    public NodoEstado clone()
+    {
+        NodoEstado nodo=new NodoEstado(ruta, costo, operador, x, y, n_items, nave, memoria.clone());
+        return nodo;
+    }
 }

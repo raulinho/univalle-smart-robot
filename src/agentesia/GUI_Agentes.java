@@ -203,19 +203,8 @@ public class GUI_Agentes extends javax.swing.JFrame {
             {
                 long tiempoinicio=System.currentTimeMillis();
                 NodoEstado respuesta = obj_busqueda.ejecutar();
-
-                if(respuesta==null) System.out.println("No se encontró respuesta con "+select);
-                else
-                {
-                    System.out.println("Se encontró respuesta con "+select);
-                    System.out.println("Ruta: "+respuesta.getRuta()+",("+respuesta.getX()+","+respuesta.getY()+")");
-                    System.out.println("Profundidad: "+respuesta.getProfundidadPorOps());
-                    System.out.println("Operadores: "+respuesta.getOperador());
-                    System.out.println("Costo: "+respuesta.getCosto());
-                }
-
                 long tiempo=System.currentTimeMillis()-tiempoinicio;
-                obj_escenario.mostrarRuta(respuesta, cordxI, cordyI);
+
                 mostrarResultado(respuesta, select,obj_busqueda.getContNodos(),tiempo);
             }
         } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
@@ -246,17 +235,20 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
     private void mostrarResultado(NodoEstado respuesta, String algoritmo, int nodos, long tiempo)
     {
-        if(respuesta==null) JOptionPane.showMessageDialog(this, "No se encontró respuesta con "+algoritmo,"Respuesta",JOptionPane.ERROR);
+        if(respuesta==null) JOptionPane.showMessageDialog(this, "No se encontró respuesta con "+algoritmo,"Respuesta",JOptionPane.ERROR_MESSAGE);
         else
         {
+            obj_escenario.mostrarRuta(respuesta, cordxI, cordyI);
             JOptionPane.showMessageDialog(this, "Se encontró respuesta con "+algoritmo+"\n"
             + "Ruta: "+respuesta.getRuta()+"("+respuesta.getX()+","+respuesta.getY()+")\n"
             + "Profundidad: "+respuesta.getProfundidadPorOps()+"\n"
             + "Nodos expandidos: "+nodos+"\n"
             + "Tiempo: "+tiempo+" ms\n"
             + "Costo: "+respuesta.getCosto(),"Resultado",JOptionPane.INFORMATION_MESSAGE);
+
+            factoria=null;
         }
-        
+
     }
 
     /**
