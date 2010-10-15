@@ -205,20 +205,26 @@ public abstract class Busqueda {
         int xActual,yActual;
         xActual=nodo.getX();
         yActual=nodo.getY();
-        double h=0.0;
+        double h=0.0,htmp=0.0;
 
-        for(int idy=0;idy<10;idy++)
+        if(nodo.getN_items()>0)
         {
             for(int idx=0;idx<10;idx++)
             {
-                if(matriz[idx][idy]==6||matriz[idx][idy]==3)
+                for(int idy=0;idy<10;idy++)
                 {
-                    h=h+Math.abs(idx-xActual)+Math.abs(idy-yActual);
-                    xActual=idx;
-                    yActual=idy;
+                    if(matriz[idx][idy]==6)
+                    {
+                        htmp=Math.abs(xActual-idx)+Math.abs(yActual-idy);
+                        xActual=idx;
+                        yActual=idy;
+                        h=h+htmp;
+                    }
                 }
             }
         }
+        htmp=Math.abs(xActual-cordXSalida)+Math.abs(yActual-cordYSalida);
+        h=h+htmp;
         h=h/2;
         return h;
     }
