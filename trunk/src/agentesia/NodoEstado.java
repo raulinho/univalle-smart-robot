@@ -14,18 +14,17 @@ public class NodoEstado {
     private double costo; // Costo para implementar en las busquedas NO informadas
     private double costo_estimado; // Costo para implementar en las busquedas Informadas
     private String operador;
-    private int n_items,n_naves;
+    private int n_items;
     private int nave;
     private int [][]memoria;
     private int x,y;
 
-    public NodoEstado(String ruta, double costo, String operador, int x, int y, int n_items, int n_naves, int nave, int [][]memoria) {
+    public NodoEstado(String ruta, double costo, String operador, int x, int y, int n_items, int nave, int [][]memoria) {
         this.ruta =ruta;
         this.costo = costo;
         this.costo_estimado = 0.0;
         this.operador = operador;
         this.n_items = n_items;
-        this.n_naves = n_naves;
         this.nave = nave;
         this.memoria=memoria;
         this.x=x;
@@ -63,10 +62,6 @@ public class NodoEstado {
     
     public int getN_items() {
         return n_items;
-    }
-
-    public int getN_naves() {
-        return n_naves;
     }
 
     public String getOperador() {

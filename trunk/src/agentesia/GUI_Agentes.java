@@ -186,7 +186,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
             obj_escenario.setPosRobot(cordxI, cordyI);
             obj_escenario.pintarRobot();
             //Para la nueva estructura
-            NodoEstado raiz=new NodoEstado("", 0, "", cordxI, cordyI, contI, contN, 0, memoria);
+            NodoEstado raiz=new NodoEstado("", 0, "", cordxI, cordyI, contI, 0, memoria);
             factoria=new FactoriaBusqueda(raiz, cordXf, cordYf,escen);
         }
     }//GEN-LAST:event_jmi_cargaEscenarioActionPerformed

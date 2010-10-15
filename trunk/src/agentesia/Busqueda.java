@@ -80,12 +80,12 @@ public abstract class Busqueda {
             if(padre.getNave()>0)
             {
                 costo=padre.getCosto()+0.5;
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getN_naves(), padre.getNave()-1,memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(),  padre.getNave()-1,memoria);
             }
             else
             {
                 costo=padre.getCosto()+1;
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getN_naves(), 0,memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), 0,memoria);
             }
         }
         //Si en el mapa es nave
@@ -96,14 +96,18 @@ public abstract class Busqueda {
             {
                 costo=padre.getCosto()+0.5;
                 //Paso como si nada
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getN_naves(), padre.getNave()-1,memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getNave()-1,memoria);
             }
             else
             {
+                int combust=0;
+                if(memoria[cordX_hijo][cordY_hijo]==4)combust=10;
+                else combust=20;
+
                 costo=padre.getCosto()+1;
                 memoria[cordX_hijo][cordY_hijo]=0;
                 //Lleno combustible
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getN_naves()-1, 10,memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), combust,memoria);
             }
         }
         //Si en el mapa es item
@@ -114,12 +118,12 @@ public abstract class Busqueda {
             if(padre.getNave()>0)
             {
                 costo=padre.getCosto()+0.5;
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items()-1, padre.getN_naves(), padre.getNave()-1, memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items()-1, padre.getNave()-1, memoria);
             }
             else
             {
                 costo=padre.getCosto()+1;
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items()-1, padre.getN_naves(), 0, memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items()-1,  0, memoria);
             }
             //escenario[x][yN]=0;
         }
@@ -130,12 +134,12 @@ public abstract class Busqueda {
             if(padre.getNave()>0)
             {
                 costo=padre.getCosto()+0.5+6;
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getN_naves(), padre.getNave()-1, memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getNave()-1, memoria);
             }
             else
             {
                 costo=padre.getCosto()+1+6;
-                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), padre.getN_naves(), 0, memoria);
+                hijo= new NodoEstado(ruta,costo,operador,cordX_hijo,cordY_hijo,padre.getN_items(), 0, memoria);
             }
         }
 
