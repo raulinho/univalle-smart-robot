@@ -20,18 +20,18 @@ import javax.imageio.ImageIO;
  */
 public class Robot {
     int x,y;
-    int gifCampo,gifDer;
+    int gifIzq,gifDer;
     BufferedImage [] camiarDerecha,caminarIzquierda;
 
     public Robot() {
-        camiarDerecha= new BufferedImage[10];
+        camiarDerecha= new BufferedImage[9];
+        caminarIzquierda=new BufferedImage[9];
         gifDer=0;
-        gifCampo=0;
-        for(int i=1;i<10;i++)
+        gifIzq=0;
+        for(int i=0;i<9;i++)
         {
-            System.out.println("img/caminarDer/" + i + ".gif");
-            camiarDerecha[i] = cargarImagen("img/caminarDer/" + i + ".gif");
-
+            camiarDerecha[i] = cargarImagen("img/caminarDer/" +(i+1)+ ".gif");
+            caminarIzquierda[i] = cargarImagen("img/caminarIzq/" +(i+1)+ ".gif");
         }
     }
 
@@ -50,15 +50,23 @@ public class Robot {
         }
     }
 
-    public void animarMov()
+    public void animarMov(boolean derecha)
     {
-        gifDer++;
-        if(gifDer>8)gifDer=0;
+        if(derecha)
+        {
+            gifDer++;
+            if(gifDer>8)gifDer=0;
+        }else{
+            gifIzq++;
+            if(gifIzq>8)gifIzq=0;
+        }
+        
     }
 
-    public void pintar(Graphics graph,ImageObserver imobs,int x,int y)
+    public void pintar(boolean Derecha,Graphics graph,ImageObserver imobs,int x,int y)
     {
-        graph.drawImage(camiarDerecha[gifDer], x, y, imobs);
+        if(Derecha)graph.drawImage(camiarDerecha[gifDer], x, y, imobs);
+        else graph.drawImage(caminarIzquierda[gifIzq], x, y, imobs);
     }
 
 }
