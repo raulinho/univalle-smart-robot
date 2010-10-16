@@ -34,8 +34,10 @@ public class EscenarioGrafico extends Canvas{
     private int gifCampo;
     private ArrayList<Campo>campos;
     private Robot robotsito;
+    private ArrayList<Item> items;
     public EscenarioGrafico(int alto, int ancho)
     {
+        items=new ArrayList<Item>();
         robotsito=new Robot();
         campos=new ArrayList<Campo>();
         posRobotX=0;
@@ -169,7 +171,7 @@ public class EscenarioGrafico extends Canvas{
                 //Inicio
                 case 2:
                     graphcs.setColor(Color.YELLOW);
-                    graphcs.drawString("S", cordx+20, cordy+20);
+                    //graphcs.drawString("S", cordx+20, cordy+20);
                    // graphcs.drawImage(robot, cordx, cordy, this);
                 break;
                 //Salida
@@ -186,12 +188,15 @@ public class EscenarioGrafico extends Canvas{
                 //Nave2
                 case 5:
                     graphcs.setColor(Color.YELLOW);
-                    graphcs.drawString("N2", cordx+20, cordy+20);
+                    graphcs.drawImage(img_nave1, cordx+10, cordy+10, this);
                 break;
                 //Item
                 case 6:
                     graphcs.setColor(Color.YELLOW);
-                    graphcs.drawString("(I)", cordx+20, cordy+20);
+                    Item item=new Item(cordx,cordy);
+                    item.pintarItem(graphcs, this);
+                    items.add(item);
+                    //graphcs.drawString("(I)", cordx+20, cordy+20);
                 break;
                 //CampoElectromagnetico
                 case 7:
@@ -260,12 +265,14 @@ public class EscenarioGrafico extends Canvas{
        pintarRobot(xVieja, yVieja);
        if(mapa[posRobotX][posRobotY]==6)
        {
+           
+            BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+            Graphics graph=buffer.getGraphics();
+            graph.drawImage(bi_fondo, 0, 0, this);
+           
            //Ahí discuparan el lava flow :$
            int cont=0;
            while(cont<12){
-                BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
-                Graphics graph=buffer.getGraphics();
-                graph.drawImage(bi_fondo, 0, 0, this);
                 robotsito.animarItem();
                 Campo campito;
                 for(int idx=0;idx<campos.size();idx++)
