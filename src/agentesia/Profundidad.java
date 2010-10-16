@@ -49,6 +49,7 @@ public class Profundidad extends Busqueda{
         String cadena= "("+ nodo.getX() + "," +nodo.getY() + ")";
         //contador de apariciones
         int count=0;
+        int numeroPunto=0;
         while(sc.hasNext())
         {
            /* x=sc.nextInt();
@@ -61,19 +62,19 @@ public class Profundidad extends Busqueda{
             //saco por pedazos el punto de la ruta con el scanner
             cordNodo=sc.next();
             cordNodo=cordNodo+","+sc.next();
+            numeroPunto++;
             //Si la cadena armada es igual a el punto del nodo actual
+            
             if(cordNodo.equals(cadena))
             {
-                count++;
+                int idx=(numeroPunto-1)*2;
+                char acierto=nodo.getItemEnPadre().charAt(idx);
+                int nItemAcierto=Integer.parseInt(acierto+"");
+                if(nItemAcierto==nodo.getN_items())return true;
             }
         }
 
-        if (count>2) return true;
-
-        //TODO Discutir cual será la tolerancia a ciclos que utilizaremos.
-        //tolerancia de aparición de un mismo nodo 1 por ahora
-        if (count>1) return true;
-        else return false;
+        return false;
     }
 
     @Override
@@ -98,6 +99,18 @@ public class Profundidad extends Busqueda{
             else if(esMeta(nodoActual))return nodoActual;
             //Expando Nodo
             colita=aplicarOperadores(nodoActual);
+            for(int idx=0;idx<colita.size();idx++)
+            {
+                NodoEstado tmp=colita.get(idx);
+                String items=nodoActual.getItemEnPadre();
+                 if(items.equals("")) items=nodoActual.getN_items()+"";
+                else items=nodoActual.getItemEnPadre()+","+nodoActual.getN_items();
+                tmp.setItemEnPadre(items);
+                System.out.println(tmp.getItemEnPadre());
+                System.out.println(tmp.getOperador());
+                colita.set(idx, tmp);
+                
+            }
             //Armo cola general
             colita.addAll(listaNodos);
             listaNodos=(ArrayList <NodoEstado>)colita.clone();

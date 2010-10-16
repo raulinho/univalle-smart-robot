@@ -18,6 +18,7 @@ public class NodoEstado {
     private int nave;
     private int [][]memoria;
     private int x,y;
+    private String itemEnPadre;
 
     public NodoEstado(String ruta, double costo, String operador, int x, int y, int n_items, int nave, int [][]memoria) {
         this.ruta =ruta;
@@ -29,7 +30,19 @@ public class NodoEstado {
         this.memoria=memoria;
         this.x=x;
         this.y=y;
+        this.itemEnPadre="";
     }
+
+    public String getItemEnPadre() {
+        return itemEnPadre;
+    }
+
+    public void setItemEnPadre(String nItem) {
+        this.itemEnPadre=nItem;
+    }
+
+    
+
 
     public int getProfundidadPorOps()
     {
