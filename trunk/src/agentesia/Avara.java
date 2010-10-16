@@ -121,6 +121,11 @@ public class Avara extends Busqueda {
                     for(int x=0; x<nodosHijos.size(); x++)
                     {
                         nodoTmp = nodosHijos.get(x);
+
+                        String items=nodoActual.getItemEnPadre();
+                        if(items.equals("")) items=nodoActual.getN_items()+"";
+                        else items=nodoActual.getItemEnPadre()+","+nodoActual.getN_items();
+                        nodoTmp.setItemEnPadre(items);
                         //colaPrioridad.clear();
                         //dependiendo de la heuristica a aplicar asigno h
                         if(tipoHeu==1) h = aplicarH1(nodoTmp);
@@ -147,20 +152,26 @@ public class Avara extends Busqueda {
         String cadena= "("+ nodo.getX() + "," +nodo.getY() + ")";
         //contador de apariciones
         int count=0;
+        int numeroPunto=0;
         while(sc.hasNext())
         {
-           //saco por pedazos el punto de la ruta con el scanner
+            //saco por pedazos el punto de la ruta con el scanner
             cordNodo=sc.next();
             cordNodo=cordNodo+","+sc.next();
+            numeroPunto++;
             //Si la cadena armada es igual a el punto del nodo actual
             if(cordNodo.equals(cadena))
             {
-                count++;
+                int idx=(numeroPunto-1)*2;
+                char acierto=nodo.getItemEnPadre().charAt(idx);
+                int nItemAcierto=Integer.parseInt(acierto+"");
+                if(nItemAcierto==nodo.getN_items())return true;
             }
         }
-        if (count>1) return true;
-        else return false;
+
+        return false;
     }
+
 
     public boolean esMeta(NodoEstado nodo)
     {
