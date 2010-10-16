@@ -66,7 +66,7 @@ public class EscenarioGrafico extends Canvas{
     public void pintarRobot()
     {
         //this.getGraphics().drawImage(robot, posRobotX*60, posRobotY*60, this);
-        robotsito.pintar(this.getGraphics(), this, posRobotX*60, posRobotY*60);
+        robotsito.pintar(true, this.getGraphics(), this, posRobotX*60, posRobotY*60);
     }
 
     public void pintarRobot(int xVieja,int yVieja)
@@ -90,8 +90,9 @@ public class EscenarioGrafico extends Canvas{
                 break;
             }
             graph.drawImage(bi_fondo, 0, 0, this);
-            robotsito.animarMov();
-            robotsito.pintar(graph, this, x, y);
+            boolean der=xVieja*60<x;
+            robotsito.animarMov(der);
+            robotsito.pintar(der,graph, this, x, y);
             //graph.drawImage(robot, x, y, this);
             Campo campito;
             for(int idx=0;idx<campos.size();idx++)
@@ -265,7 +266,7 @@ public class EscenarioGrafico extends Canvas{
    {
        try
        {
-           Thread.sleep(150);
+           Thread.sleep(100);
        }
        catch(InterruptedException e)
        {
