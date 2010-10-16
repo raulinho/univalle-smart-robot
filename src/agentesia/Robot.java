@@ -20,18 +20,23 @@ import javax.imageio.ImageIO;
  */
 public class Robot {
     int x,y;
-    int gifIzq,gifDer;
-    BufferedImage [] camiarDerecha,caminarIzquierda;
+    int gifIzq,gifDer,gifItem;
+    BufferedImage [] camiarDerecha,caminarIzquierda,celebrar;
 
     public Robot() {
         camiarDerecha= new BufferedImage[9];
         caminarIzquierda=new BufferedImage[9];
+        celebrar=new BufferedImage[11];
         gifDer=0;
         gifIzq=0;
         for(int i=0;i<9;i++)
         {
             camiarDerecha[i] = cargarImagen("img/caminarDer/" +(i+1)+ ".gif");
             caminarIzquierda[i] = cargarImagen("img/caminarIzq/" +(i+1)+ ".gif");
+        }
+        for(int i=0;i<11;i++)
+        {
+            celebrar[i] = cargarImagen("img/celebrar/" +(i+1)+ ".gif");
         }
     }
 
@@ -61,6 +66,16 @@ public class Robot {
             if(gifIzq>8)gifIzq=0;
         }
         
+    }
+
+    public void animarItem()
+    {
+        gifItem++;
+        if(gifItem>10)gifItem=0;
+    }
+    public void pintarItem(Graphics graph,ImageObserver imobs,int x,int y)
+    {
+        graph.drawImage(celebrar[gifItem], x, y, imobs);
     }
 
     public void pintar(boolean Derecha,Graphics graph,ImageObserver imobs,int x,int y)

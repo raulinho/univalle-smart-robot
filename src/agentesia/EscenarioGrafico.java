@@ -257,8 +257,29 @@ public class EscenarioGrafico extends Canvas{
                 break;
             }
         }
-
        pintarRobot(xVieja, yVieja);
+       if(mapa[posRobotX][posRobotY]==6)
+       {
+           //Ahí discuparan el lava flow :$
+           int cont=0;
+           while(cont<12){
+                BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+                Graphics graph=buffer.getGraphics();
+                graph.drawImage(bi_fondo, 0, 0, this);
+                robotsito.animarItem();
+                Campo campito;
+                for(int idx=0;idx<campos.size();idx++)
+                {
+                    campito=campos.get(idx);
+                    campito.animarCampo();
+                    campito.pintarCampo(graph, this);
+                }
+                robotsito.pintarItem(graph, this, posRobotX*60, posRobotY*60);
+                this.getGraphics().drawImage(buffer, 0, 0, this);
+                cont++;
+                espera();
+           }
+       }
    }
 
    //Espera entre el pintado de cada movimiento del robot
