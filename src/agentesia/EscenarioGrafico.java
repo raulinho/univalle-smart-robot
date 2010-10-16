@@ -33,9 +33,10 @@ public class EscenarioGrafico extends Canvas{
     private int posRobotX,posRobotY;
     private int gifCampo;
     private ArrayList<Campo>campos;
-
+    private Robot robotsito;
     public EscenarioGrafico(int alto, int ancho)
     {
+        robotsito=new Robot();
         campos=new ArrayList<Campo>();
         posRobotX=0;
         posRobotY=0;
@@ -48,7 +49,7 @@ public class EscenarioGrafico extends Canvas{
         bi_fondo=cargarImagen("img/Escenario.jpg");
         img_nave1=cargarImagen("img/nave1.gif");
        // campo=cargarImagen("img/campoMagnetico1.gif");
-        robot=cargarImagen("img/robotC.png");
+       // robot=cargarImagen("img/robotC.png");
        // this.setIgnoreRepaint(true);
     }
     public void limpiarBuffer()
@@ -64,7 +65,8 @@ public class EscenarioGrafico extends Canvas{
 
     public void pintarRobot()
     {
-        this.getGraphics().drawImage(robot, posRobotX*60, posRobotY*60, this);
+        //this.getGraphics().drawImage(robot, posRobotX*60, posRobotY*60, this);
+        robotsito.pintar(this.getGraphics(), this, posRobotX*60, posRobotY*60);
     }
 
     public void pintarRobot(int xVieja,int yVieja)
@@ -88,7 +90,9 @@ public class EscenarioGrafico extends Canvas{
                 break;
             }
             graph.drawImage(bi_fondo, 0, 0, this);
-            graph.drawImage(robot, x, y, this);
+            robotsito.animarMov();
+            robotsito.pintar(graph, this, x, y);
+            //graph.drawImage(robot, x, y, this);
             Campo campito;
             for(int idx=0;idx<campos.size();idx++)
             {
@@ -261,7 +265,7 @@ public class EscenarioGrafico extends Canvas{
    {
        try
        {
-           Thread.sleep(100);
+           Thread.sleep(150);
        }
        catch(InterruptedException e)
        {
