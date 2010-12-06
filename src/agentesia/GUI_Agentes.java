@@ -3,11 +3,12 @@ package agentesia;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import java.*;
 
 /*
  * To change this template, choose Tools | Templates
@@ -28,11 +29,30 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
     /** Creates new form GUI_Agentes */
     public GUI_Agentes() {
+        tamanoEscX=8;
+        tamanoEscY=8;
         initComponents();
         this.setVisible(true);
         jfc_selectorEscenario.setCurrentDirectory(new File("src/escenarios/"));
         this.setIgnoreRepaint(true);
         returnValJFC=0;
+        jugador="";
+
+        tablero=new int [tamanoEscX][tamanoEscY];
+        int numero=64;
+        for (int idy=0;idy<tamanoEscY;idy++)
+        {
+            for (int idx=0;idx<tamanoEscX;idx++)
+            {
+                tablero[idx][idy]=numero;
+                if(idy%2==0)numero--;
+                else numero++;
+            }
+            if(numero%2==0)numero=numero-7;
+            else numero=numero-9;
+        }
+        obj_escenario.setEscenario(tablero);
+
     }
 
     /** This method is called from within the constructor to
@@ -47,12 +67,8 @@ public class GUI_Agentes extends javax.swing.JFrame {
         jfc_selectorEscenario = new javax.swing.JFileChooser();
         jp_juego = new javax.swing.JPanel();
         jmb_config = new javax.swing.JMenuBar();
-        jm_busqueda = new javax.swing.JMenu();
-        jm_tipoBusqueda = new javax.swing.JMenu();
-        jmi_informada = new javax.swing.JMenuItem();
-        jmi_noInformada = new javax.swing.JMenuItem();
-        jm_escenario = new javax.swing.JMenu();
-        jmi_cargaEscenario = new javax.swing.JMenuItem();
+        jm_juego = new javax.swing.JMenu();
+        j_mItemIniciar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SmartRobot");
@@ -77,163 +93,280 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
         getContentPane().add(jp_juego);
 
-        jm_busqueda.setText("Configuración");
+        jm_juego.setText("Juego");
 
-        jm_tipoBusqueda.setText("Algoritmo Busqueda");
-
-        jmi_informada.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK));
-        jmi_informada.setText("Informada");
-        jmi_informada.addActionListener(new java.awt.event.ActionListener() {
+        j_mItemIniciar.setText("Iniciar Partida");
+        j_mItemIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_informadaActionPerformed(evt);
+                j_mItemIniciarActionPerformed(evt);
             }
         });
-        jm_tipoBusqueda.add(jmi_informada);
+        jm_juego.add(j_mItemIniciar);
 
-        jmi_noInformada.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.ALT_MASK));
-        jmi_noInformada.setText("No Informada");
-        jmi_noInformada.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_noInformadaActionPerformed(evt);
-            }
-        });
-        jm_tipoBusqueda.add(jmi_noInformada);
-
-        jm_busqueda.add(jm_tipoBusqueda);
-
-        jmb_config.add(jm_busqueda);
-
-        jm_escenario.setText("Escenario");
-
-        jmi_cargaEscenario.setText("Cargar Escenario");
-        jmi_cargaEscenario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmi_cargaEscenarioActionPerformed(evt);
-            }
-        });
-        jm_escenario.add(jmi_cargaEscenario);
-
-        jmb_config.add(jm_escenario);
+        jmb_config.add(jm_juego);
 
         setJMenuBar(jmb_config);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jmi_cargaEscenarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_cargaEscenarioActionPerformed
-        returnValJFC=jfc_selectorEscenario.showOpenDialog(this);
-        if(returnValJFC == JFileChooser.APPROVE_OPTION)
+    private void j_mItemIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_j_mItemIniciarActionPerformed
+        // TODO add your handling code here:
+        
+       int numPC=lanzarDado();
+       int numHuman=lanzarDado();
+       System.out.println("num pc: "+numPC+ " numHuman: "+numHuman);
+
+       if(numPC>numHuman)jugar(0);
+       else jugar(1);
+    }//GEN-LAST:event_j_mItemIniciarActionPerformed
+
+    private int lanzarDado()
+    {
+        Random randonGen = new Random();
+        int num=0;
+        while(num==0)
         {
-            File f_escenario;
-            f_escenario=jfc_selectorEscenario.getSelectedFile();
-            int [][] escen=new int[10][10];
-            int [][] memoria=new int [10][10];
-            int contN=0,contI=0,cordXf=0,cordYf=0;
+            num = randonGen.nextInt(6);
+        }
+        return num;
+    }
 
-            try {
-                Scanner sc = new Scanner(f_escenario);
-                int num;
-                int line=0;
-                int column=0;
+    /*private Vector lanzarMinijuego(String j1, String j2)
+    {
+        Random randonGen = new Random();
+        int num, movG, movP=0;
+        num = randonGen.nextInt(2);
+        String ganador;
+        Vector resultado = new Vector();
 
-                while(sc.hasNextInt())
+        switch (num)
+        {
+            case 0:
+                obj_Territorio = new Territorio();
+                ganador = obj_Territorio.jugar();
+                if(ganador.equals("empate"))
                 {
-                    num=sc.nextInt();
-                    System.err.print(num+"");
-                    //Saco datos para nodo inicial
-                    ///si es inicio
-                    if(num==2)
-                    {
-                        cordxI=column;
-                        cordyI=line;
-                    }
-                    //Salida
-                    else if(num==3)
-                    {
-                        cordXf=column;
-                        cordYf=line;
-                    }
-                    //Nave
-                    else if(num==4 || num==5)
-                    {
-                        contN++;
-                    }
-                    //item
-                    else if(num==6)
-                    {
-                        contI++;
-                    }
+                    movG = -3;
+                    movP = -3;
+                }
+                else
+                {
+                    movG = 0;
+                    movP = -6;
+                }
 
-                    //asigno los valores a las matrices del mapa y la memoria
-                    escen[column][line]=num;
-                    memoria[column][line]=num;
-                    
-                    column++;
+            break;
+            
+            case 1:
+                obj_Pizza = new PizzaEnvenenada();
+                ganador = obj_Pizza.getGanador();
+                movG = 0;
+                movP = -6;
+            break;
+            
+            case 2:
+                obj_Precipicio = new Precipicio();
+            break;
+        }
 
-                    if(column>=10)
+        resultado.add(ganador);
+        resultado.add(movG);
+        resultado.add(movP);
+        return resultado;
+
+
+    }*/
+
+    private void jugar(int juga)
+    {
+        int posJugador=0;
+        while(posJugador != 64)
+        {
+            int numMov, numMovSnake_Ladder;
+            String jugador;
+            Vector resultado;
+            int[] sNl;
+        
+            if(juga==0) jugador="robot";
+            else jugador="humano";
+            numMov = lanzarDado();
+            posJugador=0;
+            System.out.println("Movimientos: "+numMov);
+
+            if(jugador.equals("robot"))
+            {
+                obj_escenario.moverJugador(numMov, jugador);
+                obj_escenario.espera();
+
+                //Cuando un jugador se mueve a una casilla con escalera o serpiente
+                posJugador = tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()];
+                sNl= obj_escenario.getSnakesNladders();
+
+                for(int i=0; i<sNl.length; i++)
+                {
+                    if((i+1)==posJugador)
                     {
-                        System.err.println();
-                        column=0;
-                        line++;
+                        numMovSnake_Ladder = sNl[i] - posJugador;
+                        obj_escenario.moverJugador(numMovSnake_Ladder, jugador);
+                        obj_escenario.espera();
                     }
                 }
-                                
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
+
+
+                /*//Cuando un jugador se mueve a una casilla donde esta su contrincante
+                if(mismaCasilla()==true)
+                {
+                    resultado = lanzarMinijuego("humano", "robot");
+                    if(resultado.get(0).equals("humano"))
+                    {
+                        obj_escenario.moverJugador((Integer)resultado.get(1), "humano");
+                        obj_escenario.moverJugador((Integer)resultado.get(2), "robot");
+                    }
+                    else
+                    {
+                        obj_escenario.moverJugador((Integer)resultado.get(1), "robot");
+                        obj_escenario.moverJugador((Integer)resultado.get(2), "humano");
+                    }
+                }*/
+                jugar(1);
             }
-            obj_escenario.limpiarBuffer();
-            obj_escenario.paintEscenario(escen);
-            obj_escenario.setPosRobot(cordxI, cordyI);
-            obj_escenario.pintarRobot();
-            //Para la nueva estructura
-            NodoEstado raiz=new NodoEstado("", 0, "", cordxI, cordyI, contI, 0, memoria);
-            factoria=new FactoriaBusqueda(raiz, cordXf, cordYf,escen);
+            else
+            {
+                System.out.println("antes de moverlo");
+                obj_escenario.moverJugador(numMov, jugador);
+                obj_escenario.espera();
+                System.out.println("despues d moverlo");
+
+                //Cuando un jugador se mueve a una casilla con escalera o serpiente
+                posJugador = tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()];
+                sNl= obj_escenario.getSnakesNladders();
+
+                for(int i=0; i<sNl.length; i++)
+                {
+                    if(i==posJugador)
+                    {
+                        numMovSnake_Ladder = sNl[i] - posJugador;
+                        obj_escenario.moverJugador(numMovSnake_Ladder, jugador);
+                        obj_escenario.espera();
+                    }
+                }
+
+                jugar(0);
+            }
+
         }
-    }//GEN-LAST:event_jmi_cargaEscenarioActionPerformed
+    }
 
-    private void jmi_noInformadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_noInformadaActionPerformed
-        if(factoria!=null)
-        {
-            Object [] posiblilidades ={"Amplitud","Costo","Profundidad"};
-            //En el null va un icono
-            String select =(String)JOptionPane.showInputDialog(this,"Busqueda preferente por: ","Busqueda",JOptionPane.PLAIN_MESSAGE,null,posiblilidades,"Amplitud");
-            Busqueda obj_busqueda=null;
-            obj_busqueda=factoria.crearNoInformada(select);
-            if(obj_busqueda!=null)
+    private boolean mismaCasilla()
+    {
+        if((obj_escenario.getPosHumanX()==obj_escenario.getPosRobotX()) && (obj_escenario.getPosHumanY()==obj_escenario.getPosRobotY())) return true;
+        else return false;
+    }
+
+    /*public int obtenerFila(int numero)
+    {
+        int pos=numero-1;
+        int res=(int)pos/tamanoEscY;
+        return tamanoEscY-1-res;
+    }
+
+    private void cargarEscenario()
+    {
+        File f_escenario = new File("src/escenarios/.default.txt");
+        int []escen=new int[tamanoEscX*tamanoEscY];
+
+        //init escenario
+        for(int idx=0;idx<tamanoEscX*tamanoEscY;idx++)
+            escen[idx]=0;
+
+        try {
+            Scanner sc = new Scanner(f_escenario);
+            int num;
+            int orig=0;
+            int desti=0;
+            int fila;
+
+            while(sc.hasNextInt())
             {
-                long tiempoinicio=System.currentTimeMillis();
-                NodoEstado respuesta = obj_busqueda.ejecutar();
-                long tiempo=System.currentTimeMillis()-tiempoinicio;
+                //saco la cantidad de "escaleras o serpeintes" a leer
+                num=sc.nextInt();
+                while(num>0)
+                {
+                    orig=sc.nextInt();
+                    desti=sc.nextInt();
+                    fila=obtenerFila(orig);
+                    //busco el origen de la escalera o la serpiente
+                    
+                    escen[orig-1]=desti-1;
+                    
+                    num--;
+                }
 
-                mostrarResultado(respuesta, select,obj_busqueda.getContNodos(),tiempo);
             }
-        } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
-    }//GEN-LAST:event_jmi_noInformadaActionPerformed
 
-    private void jmi_informadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_informadaActionPerformed
-        if(factoria!=null)
-        {
-            Object [] posibilidades ={"Avara","A*"};
-            Object [] heuristicas = {"Heuristica 1", "Heuristica 2"};
-            //En el null va un icono
-            String select =(String)JOptionPane.showInputDialog(this,"Busqueda preferente por: ","Busqueda",JOptionPane.PLAIN_MESSAGE,null,posibilidades,"Avara");
-            String selectH =(String)JOptionPane.showInputDialog(this,"Escoja la heuristica a usar: ","Heuristicas",JOptionPane.PLAIN_MESSAGE,null,heuristicas,"Heuristica 1");
-            Busqueda obj_busqueda=null;
+        } catch (FileNotFoundException ex) {
+                Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // Del primer proy
+        obj_escenario.limpiarBuffer();
+        obj_escenario.paintEscenario(escen);
+        obj_escenario.setPosRobot(cordxI, cordyI);
+        obj_escenario.pintarRobot();
+        
+        
+     }
 
-            obj_busqueda=factoria.crearInformada(select, selectH);
-            if(obj_busqueda!=null)
+    private void cargarEscenario(File f_escenario)
+    {
+
+        int []escen=new int[tamanoEscX*tamanoEscY];
+
+        //init escenario
+        for(int idx=0;idx<tamanoEscX*tamanoEscY;idx++)
+            escen[idx]=0;
+
+
+        int contN=0,contI=0,cordXf=0,cordYf=0;
+
+        try {
+            Scanner sc = new Scanner(f_escenario);
+            int num;
+            int orig=0;
+            int desti=0;
+            int fila;
+
+            while(sc.hasNextInt())
             {
-                long tiempoinicio=System.currentTimeMillis();
-                NodoEstado respuesta = obj_busqueda.ejecutar();
-                long tiempo=System.currentTimeMillis()-tiempoinicio;
-                mostrarResultado(respuesta, select,obj_busqueda.getContNodos(),tiempo);
-                
+                //saco la cantidad de "escaleras o serpeintes" a leer
+                num=sc.nextInt();
+                while(num>0)
+                {
+                    orig=sc.nextInt();
+                    desti=sc.nextInt();
+                    fila=obtenerFila(orig);
+                    //busco el origen de la escalera o la serpiente
+
+                    escen[orig-1]=desti-1;
+
+                    num--;
+                }
+
             }
-        } else JOptionPane.showMessageDialog(this, "No se ha cargado un mapa", "Error", JOptionPane.ERROR_MESSAGE);
 
-    }//GEN-LAST:event_jmi_informadaActionPerformed
+        } catch (FileNotFoundException ex) {
+                Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // Del primer proy
+        obj_escenario.limpiarBuffer();
+        obj_escenario.paintEscenario(escen);
+        obj_escenario.setPosRobot(cordxI, cordyI);
+        obj_escenario.pintarRobot();
+        
+        obj_escenario.setEscenario(tablero);
+      }
 
-    private void mostrarResultado(NodoEstado respuesta, String algoritmo, int nodos, long tiempo)
+  private void mostrarResultado(NodoEstado respuesta, String algoritmo, int nodos, long tiempo)
     {
         if(respuesta==null) JOptionPane.showMessageDialog(this, "No se encontró respuesta con "+algoritmo,"Respuesta",JOptionPane.ERROR_MESSAGE);
         else
@@ -249,7 +382,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
             factoria=null;
         }
 
-    }
+    }*/
 
     /**
     * @param args the command line arguments
@@ -263,20 +396,20 @@ public class GUI_Agentes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem j_mItemIniciar;
     private javax.swing.JFileChooser jfc_selectorEscenario;
-    private javax.swing.JMenu jm_busqueda;
-    private javax.swing.JMenu jm_escenario;
-    private javax.swing.JMenu jm_tipoBusqueda;
+    private javax.swing.JMenu jm_juego;
     private javax.swing.JMenuBar jmb_config;
-    private javax.swing.JMenuItem jmi_cargaEscenario;
-    private javax.swing.JMenuItem jmi_informada;
-    private javax.swing.JMenuItem jmi_noInformada;
     private javax.swing.JPanel jp_juego;
     // End of variables declaration//GEN-END:variables
     private int returnValJFC;
     private EscenarioGrafico obj_escenario;
     public static final int ancho=601;
     public static final int alto=601;
-    private FactoriaBusqueda factoria;
-    private int cordxI,cordyI=0;
+    private int tamanoEscX, tamanoEscY;
+    private int [][] tablero;
+    private String jugador;
+   /* private Territorio obj_territorio;
+    private PizzaEnvenenada obj_pizza;
+    private Precipicio obj_precipicio;*/
 }
