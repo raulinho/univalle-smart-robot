@@ -54,6 +54,7 @@ public class EscenarioGrafico extends Canvas{
         snakesNladders[54]=44;
         snakesNladders[62]=48;
         snakesNladders[60]=53;
+        
         posRobotX=0;
         posRobotY=7;
         posHumanX=0;
@@ -110,12 +111,8 @@ public class EscenarioGrafico extends Canvas{
         {
             if(x<xfin)x=x+6;
             else if(y<yfin)y=y+6;
-            else if(y>=yfin && x>=xfin) break;
-            else if(x>xfin)x=x-6;
-            else if(y>yfin)y=y-6;
-            
-            
-            
+            else if(y>=yfin && x>=xfin) break;        
+                        
             /*
             if(x<xfin)x=x+6;
             else if(y<yfin)y=y+6;
