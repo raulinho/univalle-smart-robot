@@ -5,18 +5,14 @@
 
 package agentesia;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.MediaTracker;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import java.util.*;
 
 /**
  * Acá se planea poner todo lo referente a la animación del robot
@@ -25,84 +21,122 @@ import javax.imageio.ImageIO;
 public class EscenarioGrafico extends Canvas{
     private int ancho;
     private int alto;
-    private BufferedImage bi_fondo,img_nave1,robot;
-    private BufferedImage [] campo;
-    private boolean flagEscenario;
+    private BufferedImage bi_fondo;
     private int[][]mapa;
-    private MediaTracker track;
+    private int[]snakesNladders;
     private int posRobotX,posRobotY;
-    private int gifCampo;
-    private ArrayList<Campo>campos;
+    private int posHumanX,posHumanY;
     private Robot robotsito;
-    private ArrayList<Item> items;
+    private Human humano;
+
     public EscenarioGrafico(int alto, int ancho)
     {
-        items=new ArrayList<Item>();
         robotsito=new Robot();
-        campos=new ArrayList<Campo>();
-        posRobotX=0;
-        posRobotY=0;
-        mapa=new int[10][10];
-        flagEscenario=false;
+        humano=new Human();
         this.ancho=ancho;
         this.alto=alto;
         this.setBounds(0,0,this.alto,this.ancho);
         //cargando Imagen de fondo
-        bi_fondo=cargarImagen("img/Escenario.jpg");
-        img_nave1=cargarImagen("img/nave1.gif");
-       // campo=cargarImagen("img/campoMagnetico1.gif");
+        limpiarBuffer();
+        // campo=cargarImagen("img/campoMagnetico1.gif");
        // robot=cargarImagen("img/robotC.png");
        // this.setIgnoreRepaint(true);
-    }
+        snakesNladders=new int[64];
+
+        //Ladders
+        snakesNladders[11]=28;
+        snakesNladders[16]=33;
+        snakesNladders[40]=57;
+        //Snakes
+        snakesNladders[30]=4;
+        snakesNladders[26]=10;
+        snakesNladders[34]=29;
+        snakesNladders[54]=44;
+        snakesNladders[62]=48;
+        snakesNladders[60]=53;
+        posRobotX=0;
+        posRobotY=7;
+        posHumanX=0;
+        posHumanY=7;
+     }
+
     public void limpiarBuffer()
     {
-        bi_fondo=cargarImagen("img/Escenario.jpg");
+        bi_fondo=cargarImagen("img/cavescene.jpg");
     }
 
-    public void setPosRobot(int x, int y)
+    public void setEscenario(int [][] tablero)
     {
-        this.posRobotX=x;
-        this.posRobotY=y;
+
+        /* Del primer proy
+        obj_escenario.limpiarBuffer();
+        obj_escenario.paintEscenario(escen);
+        obj_escenario.setPosRobot(cordxI, cordyI);
+        obj_escenario.pintarJugador();
+        */
+        mapa=tablero.clone();
+        limpiarBuffer();
+        paintEscenario();
     }
 
-    public void pintarRobot()
+    public void pintarJugador()
     {
-        //this.getGraphics().drawImage(robot, posRobotX*60, posRobotY*60, this);
-        robotsito.pintar(true, this.getGraphics(), this, posRobotX*60, posRobotY*60);
+        robotsito.pintar(true, this.getGraphics(), this, posRobotX*75, posRobotY*75);
+        humano.pintar(true, this.getGraphics(), this, posHumanX*75, posHumanY*75);
     }
 
-    public void pintarRobot(int xVieja,int yVieja)
+    public void pintarJugador(int xVieja,int yVieja, String juga)
     {
         int x,y,xfin,yfin;
-        x=xVieja*60;
-        y=yVieja*60;
-        xfin=posRobotX*60;
-        yfin=posRobotY*60;
+        String jugador=juga;
+        x=xVieja*75;
+        y=yVieja*75;
+        if(jugador.equals("robot"))
+        {
+            xfin=posRobotX*75;
+            yfin=posRobotY*75;
+        }
+        else
+        {
+            xfin=posHumanX*75;
+            yfin=posHumanY*75;
+        }
+        
         BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
         Graphics graph=buffer.getGraphics();
         boolean puedo=true;
+
         while(puedo)
         {
-            if(x<xfin)x=x+10;
-            else if(x>xfin)x=x-10;
-            else if(y>yfin)y=y-10;
-            else if(y<yfin)y=y+10;
-            else if(y==yfin && x==xfin)
-            {
-                break;
-            }
+            if(x<xfin)x=x+6;
+            else if(y<yfin)y=y+6;
+            else if(y>=yfin && x>=xfin) break;
+            else if(x>xfin)x=x-6;
+            else if(y>yfin)y=y-6;
+            
+            
+            
+            /*
+            if(x<xfin)x=x+6;
+            else if(y<yfin)y=y+6;
+            else if(((x>=xfin)&& (y>=yfin)) || ((xfin==0)&&(yfin==0))) break;*/
+
             graph.drawImage(bi_fondo, 0, 0, this);
-            boolean der=xVieja*60<x;
-            robotsito.animarMov(der);
-            robotsito.pintar(der,graph, this, x, y);
-            //graph.drawImage(robot, x, y, this);
-            Campo campito;
-            for(int idx=0;idx<campos.size();idx++)
+            boolean der=xVieja*75<x;
+
+            if(jugador.equals("robot"))
             {
-                campito=campos.get(idx);
-                campito.animarCampo();
-                campito.pintarCampo(graph, this);
+                humano.pintar(der, graph, this, posHumanX*75, posHumanY*75);
+                robotsito.animarMov(der);
+                robotsito.pintar(der,graph, this, x, y);
             }
+            else
+            {
+                robotsito.pintar(der, graph, this, posRobotX*75, posRobotY*75);
+                humano.animarMov(der);
+                humano.pintar(der,graph, this, x, y);
+            }
+
             this.getGraphics().drawImage(buffer, 0, 0, this);
             espera();
         }
@@ -130,11 +164,10 @@ public class EscenarioGrafico extends Canvas{
         //Pintando imagen cargada
         limpiarBuffer();
         grphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
-        if(flagEscenario)
-        {
-            paintEscenario(this.mapa);
-            pintarRobot();
-        }
+
+        paintEscenario();
+        pintarJugador();
+        
     }
 
     @Override
@@ -142,153 +175,167 @@ public class EscenarioGrafico extends Canvas{
         this.paint(this.getGraphics());
     }
 
-    public void paintEscenario(int[][]mapa)
+    public void paintEscenario()
     {
-        Graphics graphcs=bi_fondo.getGraphics();
-        //graphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
-        int cordx=0;
-        int cordy=0;
-        int factorx=alto/10;
-        int factory=ancho/10;
-        for(int idx=0;idx<10;idx++)
-        {
-            cordx=idx*factorx;
+        int columns=mapa.length;
+        int fils=mapa[0].length;
 
-            for(int idy=0;idy<10;idy++)
+        BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+        Graphics graph=buffer.getGraphics();
+        boolean puedo=true;
+
+        int factorX, factorY;
+
+        factorY=alto/fils;
+        factorX=ancho/columns;
+
+        graph.drawImage(bi_fondo, 0, 0, this);
+
+        int posX,posY;
+
+        for(int idy=0;idy<columns;idy++)
+        {
+            for(int idx=0;idx<fils;idx++)
             {
-                cordy=idy*factory;
-                int valMap=mapa[idx][idy];
-                graphcs.drawRect(cordx, cordy, 60, 60);
-                this.mapa[idx][idy]=valMap;
-                switch(valMap)
+                posX=idx*factorX;
+                posY=idy*factorY;
+                //System.out.println("estoy en "+posX+" "+posY);
+                Graphics2D g2D=(Graphics2D)graph;
+                g2D.setColor(Color.black);
+                g2D.setStroke (new BasicStroke(1.2f));
+                g2D.drawRect(posX, posY, factorX, factorY);
+                g2D.drawString((mapa[idx][idy])+"", posX+factorX/2, posY+factorY/2);
+
+                for(int casilla=0; casilla<64; casilla++)
                 {
-                //obstaculo
-                case 1:
-                    graphcs.setColor(Color.DARK_GRAY);
-                    graphcs.fillRect(cordx, cordy, 60, 60);
-                    graphcs.setColor(null);
-                break;
-                //Inicio
-                case 2:
-                    graphcs.setColor(Color.YELLOW);
-                    //graphcs.drawString("S", cordx+20, cordy+20);
-                   // graphcs.drawImage(robot, cordx, cordy, this);
-                break;
-                //Salida
-                case 3:
-                    graphcs.setColor(Color.YELLOW);
-                    graphcs.drawString("(*)", cordx+20, cordy+20);
-                break;
-                //Nave1
-                case 4:
-                    graphcs.setColor(Color.YELLOW);
-                    //graphcs.drawString("N1", cordx+20, cordy+20);
-                    graphcs.drawImage(img_nave1, cordx+10, cordy+10, this);
-                break;
-                //Nave2
-                case 5:
-                    graphcs.setColor(Color.YELLOW);
-                    graphcs.drawImage(img_nave1, cordx+10, cordy+10, this);
-                break;
-                //Item
-                case 6:
-                    graphcs.setColor(Color.YELLOW);
-                    Item item=new Item(cordx,cordy);
-                    item.pintarItem(graphcs, this);
-                    items.add(item);
-                    //graphcs.drawString("(I)", cordx+20, cordy+20);
-                break;
-                //CampoElectromagnetico
-                case 7:
-                    graphcs.setColor(Color.YELLOW);
-                    Campo campito=new Campo(cordx,cordy);
-                    campito.animarCampo();
-                    campito.pintarCampo(graphcs, this);
-                    campos.add(campito);
-                    //graphcs.drawString("(¬¬)", cordx+20, cordy+20);
-                   // graphcs.drawImage(campo, cordx, cordy, this);
-                break;
+                    if((snakesNladders[casilla]!= 0) && (casilla+1==mapa[idx][idy]))
+                    {
+                        Vector p1= buscarPuntos(casilla+1);
+                        Vector p2= buscarPuntos(snakesNladders[casilla]);
+                        if(casilla<snakesNladders[casilla])
+                        {    //Se pintan escaleras
+                            int iniSx1=(((Integer)p1.get(0)*factorX)+factorX/3);
+                            int iniSy=(((Integer)p1.get(1)*factorX)+factorX/2);
+                            int iniSx2=(((Integer)p1.get(0)*factorX)+2*factorX/3);
+                            int finSx1=(((Integer)p2.get(0)*factorY)+factorY/3);
+                            int finSx2=(((Integer)p2.get(0)*factorY)+2*factorY/3);
+                            int finSy=(((Integer)p2.get(1)*factorY)+factorY/2);
+                            g2D.setColor (Color.red);
+                            g2D.setStroke (new BasicStroke(5.2f));
+                            g2D.drawLine(iniSx1, iniSy, finSx1, finSy);
+                            g2D.drawLine(iniSx2, iniSy, finSx2, finSy);
+                        }
+                        else
+                        {
+                            //Se pintan serpientes
+                            int iniSx=(((Integer)p1.get(0)*factorX)+factorX/2);
+                            int iniSy=(((Integer)p1.get(1)*factorX)+factorX/2);
+                            int finSx=(((Integer)p2.get(0)*factorY)+factorY/2);
+                            int finSy=(((Integer)p2.get(1)*factorY)+factorY/2);
+                            g2D.setColor (Color.green);
+                            g2D.setStroke (new BasicStroke(5.2f));
+                            g2D.drawLine(iniSx, iniSy, finSx, finSy);
+                        }
+                    }
                 }
-                graphcs.setColor(Color.DARK_GRAY);
 
             }
         }
-        this.getGraphics().drawImage(bi_fondo, 0, 0, this);
-        flagEscenario=true;
+        bi_fondo.getGraphics().drawImage(buffer, 0, 0, this);
+        this.getGraphics().drawImage(buffer, 0, 0, this);
     }
 
-   public void mostrarRuta(NodoEstado resp, int cordx, int cordy)
+    public Vector buscarPuntos(int num)
     {
-       //Scanner para recorrer la ruta y sacar uno a uno los operadores
-        Scanner ruta= new Scanner(resp.getOperador());
-        ruta.useDelimiter(",");
-        char op;
-        while(ruta.hasNext())
-        {
-            //Graphics graph=bi_fondo.getGraphics();
-            
-            this.getGraphics().drawImage(bi_fondo, 0, 0, this);
-            op=ruta.next().charAt(0);
-            //Dependiendo del operador incremento o decremento la coordenada correspondiente para determinar el lugar del mapa al que me debo dirigir
-            moverRobot(op);
-        }
-    }
+        Vector vecPunto = new Vector();
 
-   //Con un operador determina la nueva posición del robot
-   public void moverRobot( char op)
-   {
-       int xVieja=posRobotX;
-       int yVieja=posRobotY;
-        switch (op)
+        for(int y=0; y<8; y++)
         {
-            case '↑':
-            {
-                posRobotY--;
-                break;
-            }
-            case '→':
-            {
-                posRobotX++;
-                break;
-            }
-            case '↓':
-            {
-                posRobotY++;
-                break;
-            }
-            case '←':
-            {
-                posRobotX--;
-                break;
-            }
-        }
-       pintarRobot(xVieja, yVieja);
-       if(mapa[posRobotX][posRobotY]==6)
-       {
-           
-            BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
-            Graphics graph=buffer.getGraphics();
-            graph.drawImage(bi_fondo, 0, 0, this);
-           
-           //Ahí discuparan el lava flow :$
-           int cont=0;
-           while(cont<12){
-                robotsito.animarItem();
-                Campo campito;
-                for(int idx=0;idx<campos.size();idx++)
+           for(int x=0; x<8; x++)
+           {
+                if(num==mapa[x][y])
                 {
-                    campito=campos.get(idx);
-                    campito.animarCampo();
-                    campito.pintarCampo(graph, this);
+                    vecPunto.add(x);
+                    vecPunto.add(y);
                 }
-                robotsito.pintarItem(graph, this, posRobotX*60, posRobotY*60);
-                this.getGraphics().drawImage(buffer, 0, 0, this);
-                cont++;
-                espera();
            }
+        }
+        return vecPunto;
+    }
+    
+   //Con una cantidad de casillas y la especificacion de a quien se mueve,se desplaza un jugador
+   public void moverJugador(int m, String j)
+   {
+       String jugador=j;
+       int xVieja, yVieja, posActual;
+       if(jugador.equals("robot"))
+       {
+            xVieja=posRobotX;
+            yVieja=posRobotY;
+            posActual=mapa[posRobotX][posRobotY];
        }
+       else
+       {
+           xVieja=posHumanX;
+           yVieja=posHumanY;
+           posActual=mapa[posHumanX][posHumanY];
+       }
+
+        for(int idy=0; idy<8; idy++)
+        {
+            for(int idx=0; idx<8; idx++)
+            {
+                if(mapa[idx][idy]==posActual+m)
+                {
+                    if(jugador.equals("robot"))
+                    {
+                        posRobotX=idx;
+                        posRobotY=idy;
+                    }
+                    else
+                    {
+                        posHumanX=idx;
+                        posHumanY=idy;
+                    }
+                }
+            }
+        }
+        pintarJugador(xVieja, yVieja, jugador);
+       
+
+        /* BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+        Graphics graph=buffer.getGraphics();
+        graph.drawImage(bi_fondo, 0, 0, this);
+
+        /*int cont=0;
+        while(cont<11){
+            robotsito.animarMov(true);
+            this.getGraphics().drawImage(buffer, 0, 0, this);
+            //cont++;
+            espera();
+       //}*/
    }
 
+   public int getPosHumanX() {
+        return posHumanX;
+    }
+
+    public int getPosHumanY() {
+        return posHumanY;
+    }
+
+    public int getPosRobotX() {
+        return posRobotX;
+    }
+
+    public int getPosRobotY() {
+        return posRobotY;
+    }
+
+    public int[] getSnakesNladders() {
+        return snakesNladders;
+    }
+    
    //Espera entre el pintado de cada movimiento del robot
    public void espera()
    {

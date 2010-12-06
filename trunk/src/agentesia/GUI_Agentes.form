@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
@@ -6,53 +6,17 @@
     </Component>
     <Menu class="javax.swing.JMenuBar" name="jmb_config">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jm_busqueda">
+        <Menu class="javax.swing.JMenu" name="jm_juego">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Configuraci&#xf3;n"/>
+            <Property name="text" type="java.lang.String" value="Juego"/>
           </Properties>
           <SubComponents>
-            <Menu class="javax.swing.JMenu" name="jm_tipoBusqueda">
+            <MenuItem class="javax.swing.JMenuItem" name="j_mItemIniciar">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Algoritmo Busqueda"/>
-              </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="jmi_informada">
-                  <Properties>
-                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                      <KeyStroke key="Alt+I"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Informada"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_informadaActionPerformed"/>
-                  </Events>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="jmi_noInformada">
-                  <Properties>
-                    <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                      <KeyStroke key="Alt+N"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="No Informada"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_noInformadaActionPerformed"/>
-                  </Events>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
-          </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jm_escenario">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Escenario"/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jmi_cargaEscenario">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Cargar Escenario"/>
+                <Property name="text" type="java.lang.String" value="Iniciar Partida"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmi_cargaEscenarioActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="j_mItemIniciarActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
