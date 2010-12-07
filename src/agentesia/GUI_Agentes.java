@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.*;
+import juegoPizza.PizzaGUI;
+import minimax.GUI_Territorio;
 
 /*
  * To change this template, choose Tools | Templates
@@ -27,6 +29,9 @@ import java.*;
  */
 public class GUI_Agentes extends javax.swing.JFrame {
 
+    private int posJugador;
+    private boolean terminar;
+
     /** Creates new form GUI_Agentes */
     public GUI_Agentes() {
         tamanoEscX=8;
@@ -37,6 +42,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
         this.setIgnoreRepaint(true);
         returnValJFC=0;
         jugador="";
+        terminar=false;
 
         tablero=new int [tamanoEscX][tamanoEscY];
         int numero=64;
@@ -71,7 +77,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
         j_mItemIniciar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("SmartRobot");
+        setTitle("SnakesAndLadders");
         getContentPane().setLayout(new java.awt.FlowLayout());
 
         jp_juego.setPreferredSize(new Dimension(ancho,alto));
@@ -118,7 +124,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
        System.out.println("num pc: "+numPC+ " numHuman: "+numHuman);
 
        if(numPC>numHuman)jugar(0);
-       else jugar(1);
+       else lanzarJuego(1);
     }//GEN-LAST:event_j_mItemIniciarActionPerformed
 
     private int lanzarDado()
@@ -132,19 +138,19 @@ public class GUI_Agentes extends javax.swing.JFrame {
         return num;
     }
 
-    /*private Vector lanzarMinijuego(String j1, String j2)
+    private Vector lanzarMinijuego(String j1, String j2)
     {
         Random randonGen = new Random();
-        int num, movG, movP=0;
+        int num, movG=0, movP=0;
         num = randonGen.nextInt(2);
-        String ganador;
+        String ganador="";
         Vector resultado = new Vector();
 
         switch (num)
         {
             case 0:
-                obj_Territorio = new Territorio();
-                ganador = obj_Territorio.jugar();
+                GUI_Territorio obj_Territorio = new GUI_Territorio(j1);
+                ganador = obj_Territorio.getGanador();
                 if(ganador.equals("empate"))
                 {
                     movG = -3;
@@ -159,14 +165,15 @@ public class GUI_Agentes extends javax.swing.JFrame {
             break;
             
             case 1:
-                obj_Pizza = new PizzaEnvenenada();
+                PizzaGUI obj_Pizza = new PizzaGUI(j1,j2);
                 ganador = obj_Pizza.getGanador();
                 movG = 0;
                 movP = -6;
             break;
             
             case 2:
-                obj_Precipicio = new Precipicio();
+                System.out.println("Paila ñeño");
+                //obj_Precipicio = new Precipicio();
             break;
         }
 
@@ -176,12 +183,16 @@ public class GUI_Agentes extends javax.swing.JFrame {
         return resultado;
 
 
-    }*/
+    }
 
     private void jugar(int juga)
     {
-        int posJugador=0;
-        while(posJugador != 64)
+        System.out.println("Inicio del partida");
+        System.out.println("Posicion maquina: "+tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]+" Posicion jugador: "+tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]);
+       /* while((tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]!=64)||(tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]!=64))
+        {*/
+        if((tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]==64)||(tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]==64)) terminar=true;
+        else
         {
             int numMov, numMovSnake_Ladder;
             String jugador;
@@ -191,12 +202,12 @@ public class GUI_Agentes extends javax.swing.JFrame {
             if(juga==0) jugador="robot";
             else jugador="humano";
             numMov = lanzarDado();
-            posJugador=0;
             System.out.println("Movimientos: "+numMov);
 
             if(jugador.equals("robot"))
             {
                 obj_escenario.moverJugador(numMov, jugador);
+                System.out.println("Robot se mueve a: "+ tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]);
                 obj_escenario.espera();
 
                 //Cuando un jugador se mueve a una casilla con escalera o serpiente
@@ -214,11 +225,15 @@ public class GUI_Agentes extends javax.swing.JFrame {
                 }
 
 
-                /*//Cuando un jugador se mueve a una casilla donde esta su contrincante
-                if(mismaCasilla()==true)
+                //Cuando un jugador se mueve a una casilla donde esta su contrincante
+                if(mismaCasilla())
                 {
+                    System.out.println("ESTAN EN LA MISMA CASILLA");
+                    terminar=true;
                     resultado = lanzarMinijuego("humano", "robot");
-                    if(resultado.get(0).equals("humano"))
+
+                    return;
+                    /*if(resultado.get(0).equals("humano"))
                     {
                         obj_escenario.moverJugador((Integer)resultado.get(1), "humano");
                         obj_escenario.moverJugador((Integer)resultado.get(2), "robot");
@@ -227,16 +242,16 @@ public class GUI_Agentes extends javax.swing.JFrame {
                     {
                         obj_escenario.moverJugador((Integer)resultado.get(1), "robot");
                         obj_escenario.moverJugador((Integer)resultado.get(2), "humano");
-                    }
-                }*/
+                    }*/
+                }
                 jugar(1);
             }
             else
             {
-                System.out.println("antes de moverlo");
+                //System.out.println("antes de moverlo");
                 obj_escenario.moverJugador(numMov, jugador);
                 obj_escenario.espera();
-                System.out.println("despues d moverlo");
+                System.out.println("Jugador se mueve a: "+tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]);
 
                 //Cuando un jugador se mueve a una casilla con escalera o serpiente
                 posJugador = tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()];
@@ -245,7 +260,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
                 for(int i=0; i<sNl.length; i++)
                 {
                     if(i==posJugador)
-                    {
+                    {                       
                         numMovSnake_Ladder = sNl[i] - posJugador;
                         obj_escenario.moverJugador(numMovSnake_Ladder, jugador);
                         obj_escenario.espera();
@@ -254,14 +269,41 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
                 jugar(0);
             }
-
         }
+        //}
     }
 
     private boolean mismaCasilla()
     {
-        if((obj_escenario.getPosHumanX()==obj_escenario.getPosRobotX()) && (obj_escenario.getPosHumanY()==obj_escenario.getPosRobotY())) return true;
-        else return false;
+        if((obj_escenario.getPosHumanX()==obj_escenario.getPosRobotX()) && (obj_escenario.getPosHumanY()==obj_escenario.getPosRobotY()))
+        {
+                                        return true;
+        
+
+            }
+        else {
+                                        System.out.println("NO ESTAN EN LA MISMA CASILLA");
+        return false;
+        }
+    }
+
+    public void lanzarJuego(int primerTurno)
+    {
+        if(primerTurno==0)
+        {
+            while(!terminar)
+            {
+                jugar(0);
+            }
+        }
+
+        else
+        {
+            while(!terminar)
+            {
+                jugar(1);
+            }
+        }
     }
 
     /*public int obtenerFila(int numero)
@@ -409,7 +451,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
     private int tamanoEscX, tamanoEscY;
     private int [][] tablero;
     private String jugador;
-   /* private Territorio obj_territorio;
-    private PizzaEnvenenada obj_pizza;
-    private Precipicio obj_precipicio;*/
+    //private Territorio obj_territorio;
+    private PizzaGUI obj_pizza;
+    //private Precipicio obj_precipicio;
 }
