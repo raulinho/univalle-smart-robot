@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import java.*;
 import juegoPizza.PizzaGUI;
-import minimax.GUI_Territorio;
+import juegoTerritorio.GUI_Territorio;
 
 /*
  * To change this template, choose Tools | Templates
