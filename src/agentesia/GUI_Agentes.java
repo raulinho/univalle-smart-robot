@@ -2,15 +2,9 @@ package agentesia;
 
 import java.awt.Dimension;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import java.*;
 import juegoPizza.PizzaGUI;
-import juegoTerritorio.GUI_Territorio;
 
 /*
  * To change this template, choose Tools | Templates
@@ -41,22 +35,41 @@ public class GUI_Agentes extends javax.swing.JFrame {
         jfc_selectorEscenario.setCurrentDirectory(new File("src/escenarios/"));
         this.setIgnoreRepaint(true);
         returnValJFC=0;
-        jugador="";
-        terminar=false;
 
         tablero=new int [tamanoEscX][tamanoEscY];
         int numero=64;
+        boolean decre=true;
         for (int idy=0;idy<tamanoEscY;idy++)
         {
             for (int idx=0;idx<tamanoEscX;idx++)
             {
                 tablero[idx][idy]=numero;
-                if(idy%2==0)numero--;
+                System.out.print(tablero[idx][idy]+" ");
+
+                if(decre)numero--;
                 else numero++;
             }
-            if(numero%2==0)numero=numero-7;
-            else numero=numero-9;
+            System.out.println("");
+            if(decre)numero++;
+            else numero--;
+            numero=numero-8;
+            decre=!decre;
         }
+        int[] snakesNladders=new int[64];
+
+        //Ladders
+        snakesNladders[11]=28;
+        snakesNladders[16]=33;
+        snakesNladders[40]=57;
+        //Snakes
+        snakesNladders[30]=4;
+        snakesNladders[26]=10;
+        snakesNladders[34]=29;
+        snakesNladders[54]=44;
+        snakesNladders[62]=48;
+        snakesNladders[60]=53;
+
+        obj_SnaksNLadres=new EscenarioSnakesNLadrs(snakesNladders,tablero);
         obj_escenario.setEscenario(tablero);
 
     }
@@ -72,6 +85,8 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
         jfc_selectorEscenario = new javax.swing.JFileChooser();
         jp_juego = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jb_lanzarDado = new javax.swing.JButton();
         jmb_config = new javax.swing.JMenuBar();
         jm_juego = new javax.swing.JMenu();
         j_mItemIniciar = new javax.swing.JMenuItem();
@@ -92,12 +107,38 @@ public class GUI_Agentes extends javax.swing.JFrame {
         );
         jp_juegoLayout.setVerticalGroup(
             jp_juegoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 632, Short.MAX_VALUE)
+            .addGap(0, 711, Short.MAX_VALUE)
         );
 
         jp_juego.add("Center",obj_escenario);
 
         getContentPane().add(jp_juego);
+
+        jb_lanzarDado.setText("Lanzar Dado");
+        jb_lanzarDado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jb_lanzarDadoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jb_lanzarDado)
+                .addContainerGap(22, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jb_lanzarDado)
+                .addContainerGap(59, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel1);
 
         jm_juego.setText("Juego");
 
@@ -117,15 +158,83 @@ public class GUI_Agentes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void j_mItemIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_j_mItemIniciarActionPerformed
-        // TODO add your handling code here:
-        
-       int numPC=lanzarDado();
-       int numHuman=lanzarDado();
-       System.out.println("num pc: "+numPC+ " numHuman: "+numHuman);
-
-       if(numPC>numHuman)jugar(0);
-       else lanzarJuego(1);
+       obj_escenario.setEscenario(tablero);
+       JOptionPane.showMessageDialog(this, "Se lanzara el dado para decidir quien comienza");
+       jugador="";
     }//GEN-LAST:event_j_mItemIniciarActionPerformed
+
+    private void jb_lanzarDadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_lanzarDadoActionPerformed
+        if(jugador.equals(""))
+        {
+            int hum=0,maq=0;
+            while(hum==maq)
+            {
+                hum=lanzarDado();
+                JOptionPane.showMessageDialog(this, "Usted sacó: "+hum);
+                maq=lanzarDado();
+                if(hum<maq){
+                    JOptionPane.showMessageDialog(this, "Robot sacó: "+maq+", Comienza el Robot");
+                    jugador="robot";
+                    jugarRobot();
+                }else {
+                    JOptionPane.showMessageDialog(this, "Robot sacó: "+maq+", Comienza Usted");
+                    jugador="humano";
+                }
+
+            }
+         }else
+         {
+            jugarHumano();
+         }
+    }//GEN-LAST:event_jb_lanzarDadoActionPerformed
+
+    public void jugarRobot()
+    {
+        int desplaza=lanzarDado();
+        System.out.println("Roboto saco ="+desplaza);
+        boolean encuentro=obj_SnaksNLadres.desplazar("robot", desplaza);
+        System.out.println(""+encuentro);
+        //desplazo y luego y dependiendo de si hayi encuentro procedo a llamar minijuegos
+        ArrayList posicionEscenario=obj_SnaksNLadres.getPos(obj_SnaksNLadres.maquina);
+        System.out.println("Robot queda en="+posicionEscenario.get(0)+","+posicionEscenario.get(1));
+        boolean atajo=obj_SnaksNLadres.esAtajo(obj_SnaksNLadres.maquina);
+        obj_escenario.desplazarJugador(posicionEscenario, "robot",atajo);
+        
+        if(atajo)
+        {
+            JOptionPane.showMessageDialog(this, "Hubo atajo");
+        }
+        if(encuentro)
+        {
+            //TODO lanzar Minijuego arrancando Humano
+
+            JOptionPane.showMessageDialog(this, "Se lanza Minijuego");
+        }
+    }
+
+    public void jugarHumano(){
+        int desplaza=lanzarDado();
+        System.out.println("Humano saco ="+desplaza);
+        boolean encuentro=obj_SnaksNLadres.desplazar("humano", desplaza);
+        //desplazo y luego y dependiendo de si hayi encuentro procedo a llamar minijuegos
+        ArrayList posicionEscenario=obj_SnaksNLadres.getPos(obj_SnaksNLadres.humano);
+        System.out.println("Humano queda en="+posicionEscenario.get(0)+","+posicionEscenario.get(1));
+
+        boolean atajo=obj_SnaksNLadres.esAtajo(obj_SnaksNLadres.humano);
+        obj_escenario.desplazarJugador(posicionEscenario, "humano",false);
+
+        if(atajo)
+        {
+            
+            JOptionPane.showMessageDialog(this, "Hubo atajo");
+        }
+        if(encuentro)
+        {
+            //TODO lanzar Minijuego arrancando Maquina
+            JOptionPane.showMessageDialog(this, "Se lanza Minijuego");
+        }
+        jugarRobot();
+    }
 
     private int lanzarDado()
     {
@@ -138,294 +247,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
         return num;
     }
 
-    private Vector lanzarMinijuego(String j1, String j2)
-    {
-        Random randonGen = new Random();
-        int num, movG=0, movP=0;
-        num = randonGen.nextInt(2);
-        String ganador="";
-        Vector resultado = new Vector();
-
-        switch (num)
-        {
-            case 0:
-                GUI_Territorio obj_Territorio = new GUI_Territorio(j1);
-                ganador = obj_Territorio.getGanador();
-                if(ganador.equals("empate"))
-                {
-                    movG = -3;
-                    movP = -3;
-                }
-                else
-                {
-                    movG = 0;
-                    movP = -6;
-                }
-
-            break;
-            
-            case 1:
-                PizzaGUI obj_Pizza = new PizzaGUI(j1,j2);
-                ganador = obj_Pizza.getGanador();
-                movG = 0;
-                movP = -6;
-            break;
-            
-            case 2:
-                System.out.println("Paila ñeño");
-                //obj_Precipicio = new Precipicio();
-            break;
-        }
-
-        resultado.add(ganador);
-        resultado.add(movG);
-        resultado.add(movP);
-        return resultado;
-
-
-    }
-
-    private void jugar(int juga)
-    {
-        System.out.println("Inicio del partida");
-        System.out.println("Posicion maquina: "+tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]+" Posicion jugador: "+tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]);
-       /* while((tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]!=64)||(tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]!=64))
-        {*/
-        if((tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]==64)||(tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]==64)) terminar=true;
-        else
-        {
-            int numMov, numMovSnake_Ladder;
-            String jugador;
-            Vector resultado;
-            int[] sNl;
-        
-            if(juga==0) jugador="robot";
-            else jugador="humano";
-            numMov = lanzarDado();
-            System.out.println("Movimientos: "+numMov);
-
-            if(jugador.equals("robot"))
-            {
-                obj_escenario.moverJugador(numMov, jugador);
-                System.out.println("Robot se mueve a: "+ tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()]);
-                obj_escenario.espera();
-
-                //Cuando un jugador se mueve a una casilla con escalera o serpiente
-                posJugador = tablero[obj_escenario.getPosRobotX()][obj_escenario.getPosRobotY()];
-                sNl= obj_escenario.getSnakesNladders();
-
-                for(int i=0; i<sNl.length; i++)
-                {
-                    if((i+1)==posJugador)
-                    {
-                        numMovSnake_Ladder = sNl[i] - posJugador;
-                        obj_escenario.moverJugador(numMovSnake_Ladder, jugador);
-                        obj_escenario.espera();
-                    }
-                }
-
-
-                //Cuando un jugador se mueve a una casilla donde esta su contrincante
-                if(mismaCasilla())
-                {
-                    System.out.println("ESTAN EN LA MISMA CASILLA");
-                    terminar=true;
-                    resultado = lanzarMinijuego("humano", "robot");
-
-                    return;
-                    /*if(resultado.get(0).equals("humano"))
-                    {
-                        obj_escenario.moverJugador((Integer)resultado.get(1), "humano");
-                        obj_escenario.moverJugador((Integer)resultado.get(2), "robot");
-                    }
-                    else
-                    {
-                        obj_escenario.moverJugador((Integer)resultado.get(1), "robot");
-                        obj_escenario.moverJugador((Integer)resultado.get(2), "humano");
-                    }*/
-                }
-                jugar(1);
-            }
-            else
-            {
-                //System.out.println("antes de moverlo");
-                obj_escenario.moverJugador(numMov, jugador);
-                obj_escenario.espera();
-                System.out.println("Jugador se mueve a: "+tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()]);
-
-                //Cuando un jugador se mueve a una casilla con escalera o serpiente
-                posJugador = tablero[obj_escenario.getPosHumanX()][obj_escenario.getPosHumanY()];
-                sNl= obj_escenario.getSnakesNladders();
-
-                for(int i=0; i<sNl.length; i++)
-                {
-                    if(i==posJugador)
-                    {                       
-                        numMovSnake_Ladder = sNl[i] - posJugador;
-                        obj_escenario.moverJugador(numMovSnake_Ladder, jugador);
-                        obj_escenario.espera();
-                    }
-                }
-
-                jugar(0);
-            }
-        }
-        //}
-    }
-
-    private boolean mismaCasilla()
-    {
-        if((obj_escenario.getPosHumanX()==obj_escenario.getPosRobotX()) && (obj_escenario.getPosHumanY()==obj_escenario.getPosRobotY()))
-        {
-                                        return true;
-        
-
-            }
-        else {
-                                        System.out.println("NO ESTAN EN LA MISMA CASILLA");
-        return false;
-        }
-    }
-
-    public void lanzarJuego(int primerTurno)
-    {
-        if(primerTurno==0)
-        {
-            while(!terminar)
-            {
-                jugar(0);
-            }
-        }
-
-        else
-        {
-            while(!terminar)
-            {
-                jugar(1);
-            }
-        }
-    }
-
-    /*public int obtenerFila(int numero)
-    {
-        int pos=numero-1;
-        int res=(int)pos/tamanoEscY;
-        return tamanoEscY-1-res;
-    }
-
-    private void cargarEscenario()
-    {
-        File f_escenario = new File("src/escenarios/.default.txt");
-        int []escen=new int[tamanoEscX*tamanoEscY];
-
-        //init escenario
-        for(int idx=0;idx<tamanoEscX*tamanoEscY;idx++)
-            escen[idx]=0;
-
-        try {
-            Scanner sc = new Scanner(f_escenario);
-            int num;
-            int orig=0;
-            int desti=0;
-            int fila;
-
-            while(sc.hasNextInt())
-            {
-                //saco la cantidad de "escaleras o serpeintes" a leer
-                num=sc.nextInt();
-                while(num>0)
-                {
-                    orig=sc.nextInt();
-                    desti=sc.nextInt();
-                    fila=obtenerFila(orig);
-                    //busco el origen de la escalera o la serpiente
-                    
-                    escen[orig-1]=desti-1;
-                    
-                    num--;
-                }
-
-            }
-
-        } catch (FileNotFoundException ex) {
-                Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        // Del primer proy
-        obj_escenario.limpiarBuffer();
-        obj_escenario.paintEscenario(escen);
-        obj_escenario.setPosRobot(cordxI, cordyI);
-        obj_escenario.pintarRobot();
-        
-        
-     }
-
-    private void cargarEscenario(File f_escenario)
-    {
-
-        int []escen=new int[tamanoEscX*tamanoEscY];
-
-        //init escenario
-        for(int idx=0;idx<tamanoEscX*tamanoEscY;idx++)
-            escen[idx]=0;
-
-
-        int contN=0,contI=0,cordXf=0,cordYf=0;
-
-        try {
-            Scanner sc = new Scanner(f_escenario);
-            int num;
-            int orig=0;
-            int desti=0;
-            int fila;
-
-            while(sc.hasNextInt())
-            {
-                //saco la cantidad de "escaleras o serpeintes" a leer
-                num=sc.nextInt();
-                while(num>0)
-                {
-                    orig=sc.nextInt();
-                    desti=sc.nextInt();
-                    fila=obtenerFila(orig);
-                    //busco el origen de la escalera o la serpiente
-
-                    escen[orig-1]=desti-1;
-
-                    num--;
-                }
-
-            }
-
-        } catch (FileNotFoundException ex) {
-                Logger.getLogger(GUI_Agentes.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        // Del primer proy
-        obj_escenario.limpiarBuffer();
-        obj_escenario.paintEscenario(escen);
-        obj_escenario.setPosRobot(cordxI, cordyI);
-        obj_escenario.pintarRobot();
-        
-        obj_escenario.setEscenario(tablero);
-      }
-
-  private void mostrarResultado(NodoEstado respuesta, String algoritmo, int nodos, long tiempo)
-    {
-        if(respuesta==null) JOptionPane.showMessageDialog(this, "No se encontró respuesta con "+algoritmo,"Respuesta",JOptionPane.ERROR_MESSAGE);
-        else
-        {
-            obj_escenario.mostrarRuta(respuesta, cordxI, cordyI);
-            JOptionPane.showMessageDialog(this, "Se encontró respuesta con "+algoritmo+"\n"
-            + "Ruta: "+respuesta.getRuta()+"("+respuesta.getX()+","+respuesta.getY()+")\n"
-            + "Profundidad: "+respuesta.getProfundidadPorOps()+"\n"
-            + "Nodos expandidos: "+nodos+"\n"
-            + "Tiempo: "+tiempo+" ms\n"
-            + "Costo: "+respuesta.getCosto(),"Resultado",JOptionPane.INFORMATION_MESSAGE);
-
-            factoria=null;
-        }
-
-    }*/
-
+    
     /**
     * @param args the command line arguments
     */
@@ -438,7 +260,9 @@ public class GUI_Agentes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuItem j_mItemIniciar;
+    private javax.swing.JButton jb_lanzarDado;
     private javax.swing.JFileChooser jfc_selectorEscenario;
     private javax.swing.JMenu jm_juego;
     private javax.swing.JMenuBar jmb_config;
@@ -450,8 +274,9 @@ public class GUI_Agentes extends javax.swing.JFrame {
     public static final int alto=601;
     private int tamanoEscX, tamanoEscY;
     private int [][] tablero;
-    private String jugador;
+    private String jugador="";
     //private Territorio obj_territorio;
     private PizzaGUI obj_pizza;
+    private EscenarioSnakesNLadrs obj_SnaksNLadres;
     //private Precipicio obj_precipicio;
 }
