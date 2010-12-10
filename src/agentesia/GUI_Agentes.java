@@ -198,11 +198,18 @@ public class GUI_Agentes extends javax.swing.JFrame {
         ArrayList posicionEscenario=obj_SnaksNLadres.getPos(obj_SnaksNLadres.maquina);
         System.out.println("Robot queda en="+posicionEscenario.get(0)+","+posicionEscenario.get(1));
         boolean atajo=obj_SnaksNLadres.esAtajo(obj_SnaksNLadres.maquina);
-        obj_escenario.desplazarJugador(posicionEscenario, "robot",atajo);
+        obj_escenario.desplazarJugador(posicionEscenario, "robot",false);
         
         if(atajo)
         {
-            JOptionPane.showMessageDialog(this, "Hubo atajo");
+            System.out.println("Posicion antes de tomar atajo"+obj_SnaksNLadres.maquina);
+            obj_SnaksNLadres.tomarAtajo("robot", obj_SnaksNLadres.maquina);
+            System.out.println("Posicion despues de tomar atajo"+obj_SnaksNLadres.maquina);
+            //desplazo y luego y dependiendo de si hayi encuentro procedo a llamar minijuegos
+            posicionEscenario.addAll(obj_SnaksNLadres.getPos(obj_SnaksNLadres.maquina));
+            System.out.println("Robot queda en="+posicionEscenario.get(0)+","+posicionEscenario.get(1));
+
+            obj_escenario.desplazarJugador(posicionEscenario, "robot",atajo);
         }
         if(encuentro)
         {
@@ -225,8 +232,14 @@ public class GUI_Agentes extends javax.swing.JFrame {
 
         if(atajo)
         {
-            
-            JOptionPane.showMessageDialog(this, "Hubo atajo");
+            System.out.println("Posicion antes de tomar atajo H "+obj_SnaksNLadres.humano);
+            obj_SnaksNLadres.tomarAtajo("humano", obj_SnaksNLadres.humano);
+            System.out.println("Posicion despues de tomar atajo H "+obj_SnaksNLadres.humano);
+            //desplazo y luego y dependiendo de si hayi encuentro procedo a llamar minijuegos
+            posicionEscenario=obj_SnaksNLadres.getPos(obj_SnaksNLadres.humano);
+            System.out.println("Humano queda en="+posicionEscenario.get(0)+","+posicionEscenario.get(1));
+
+            obj_escenario.desplazarJugador(posicionEscenario, "humano",atajo);
         }
         if(encuentro)
         {

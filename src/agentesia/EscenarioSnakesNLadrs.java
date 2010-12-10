@@ -30,6 +30,17 @@ class EscenarioSnakesNLadrs {
             System.arraycopy(mapa[i],0,this.mapa[i],0,mapa[i].length);
         }
     }
+    
+    public void tomarAtajo (String jugador,int posicion)
+    {
+        if(jugador.equals("humano"))
+        {
+            humano=atajos[posicion-1];
+        }else
+        {
+            maquina=atajos[posicion-1];
+        }
+    }
 
     public boolean desplazar(String jugador,int avance)
     {
