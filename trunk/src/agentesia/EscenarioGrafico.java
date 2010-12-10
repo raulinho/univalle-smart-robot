@@ -31,8 +31,7 @@ public class EscenarioGrafico extends Canvas{
 
     public EscenarioGrafico(int alto, int ancho)
     {
-        robotsito=new Robot();
-        humano=new Human();
+        
         this.ancho=ancho;
         this.alto=alto;
         this.setBounds(0,0,this.alto,this.ancho);
@@ -59,6 +58,8 @@ public class EscenarioGrafico extends Canvas{
         posRobotY=7;
         posHumanX=0;
         posHumanY=7;
+        robotsito=new Robot((posRobotX*75),(posRobotY*75));
+        humano=new Human(posHumanX*75,posHumanY*75);
      }
 
     public void limpiarBuffer()
@@ -75,69 +76,126 @@ public class EscenarioGrafico extends Canvas{
         obj_escenario.setPosRobot(cordxI, cordyI);
         obj_escenario.pintarJugador();
         */
-        mapa=tablero.clone();
+        mapa=new int[8][8];
+        for(int idy=0;idy<8;idy++)
+        {
+            for(int idx=0;idx<8;idx++)
+            {
+                mapa[idx][idy]=tablero[idx][idy];
+            }
+        }
+        posRobotX=0;
+        posRobotY=7;
+        posHumanX=0;
+        posHumanY=7;
+        
+        robotsito.setPos((posRobotX*75),(posRobotY*75));
+        humano.setPos((posHumanX*75),(posHumanY*75));
+
         limpiarBuffer();
         paintEscenario();
     }
 
     public void pintarJugador()
     {
-        robotsito.pintar(true, this.getGraphics(), this, posRobotX*75, posRobotY*75);
-        humano.pintar(true, this.getGraphics(), this, posHumanX*75, posHumanY*75);
+        BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+        Graphics graph=buffer.getGraphics();
+        graph.drawImage(bi_fondo, 0, 0, this);
+        robotsito.pintar(graph, this);
+        humano.pintar(graph, this);
+        this.getGraphics().drawImage(buffer, 0, 0, this);
     }
 
-    public void pintarJugador(int xVieja,int yVieja, String juga)
+    public void desplazarJugador(ArrayList posicion,String jugador,boolean atajo)
     {
-        int x,y,xfin,yfin;
-        String jugador=juga;
-        x=xVieja*75;
-        y=yVieja*75;
-        if(jugador.equals("robot"))
+
+        int xorig,yorig,xfin,yfin;
+        int xo,xf,yo,yf;
+        Jugador obj;
+        xf=(Integer)posicion.get(0);
+        yf=(Integer)posicion.get(1);
+
+        xfin=(Integer)posicion.remove(0)*75;
+        yfin=(Integer)posicion.remove(0)*75;
+
+        if(jugador.equals("humano"))
         {
-            xfin=posRobotX*75;
-            yfin=posRobotY*75;
+            obj=humano;
+            xorig=(Integer)humano.getPos().get(0);
+            yorig=(Integer)humano.getPos().get(1);
         }
         else
         {
-            xfin=posHumanX*75;
-            yfin=posHumanY*75;
+            obj=robotsito;
+            xorig=(Integer)robotsito.getPos().get(0);
+            yorig=(Integer)robotsito.getPos().get(1);
         }
-        
-        BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
-        Graphics graph=buffer.getGraphics();
-        boolean puedo=true;
 
-        while(puedo)
+        xo=(Integer)obj.getPosMa().get(0);
+        yo=(Integer)obj.getPosMa().get(1);
+
+        /*if(xfin-xorig==0)
         {
-            if(x<xfin)x=x+6;
-            else if(y<yfin)y=y+6;
-            else if(y>=yfin && x>=xfin) break;        
-                        
-            /*
-            if(x<xfin)x=x+6;
-            else if(y<yfin)y=y+6;
-            else if(((x>=xfin)&& (y>=yfin)) || ((xfin==0)&&(yfin==0))) break;*/
-
-            graph.drawImage(bi_fondo, 0, 0, this);
-            boolean der=xVieja*75<x;
-
-            if(jugador.equals("robot"))
+            pintarVertical(yfin,yorig,jugador);
+        }else if(yfin-yorig==0)
+        {
+            pintarHorizontal(xfin,xorig,jugador);
+        }*/
+        if(!atajo){
+            if(yf==yo)
             {
-                humano.pintar(der, graph, this, posHumanX*75, posHumanY*75);
-                robotsito.animarMov(der);
-                robotsito.pintar(der,graph, this, x, y);
-            }
-            else
+                System.out.println("yfin "+yf+"yorigin "+yo);
+                pintarHorizontal(xfin, xorig, jugador);
+            }else if(xo==xf){
+                System.out.println("xfin "+xf+"xorigin "+xo);
+                pintarVertical(yfin, yorig, jugador);
+            }else if(yf!=yo && xo!=xf)
             {
-                robotsito.pintar(der, graph, this, posRobotX*75, posRobotY*75);
-                humano.animarMov(der);
-                humano.pintar(der,graph, this, x, y);
+                System.out.println("xfin "+xf+"xorigin "+xo);
+                System.out.println("yfin "+yf+"yorigin "+yo);
+                if (yf % 2 == 0)
+                {
+                    pintarHorizontal(7*75, xorig, jugador);
+                    pintarVertical(yfin, yorig, jugador);
+                    pintarHorizontal(xfin, 7*75, jugador);
+                }else
+                {
+                    pintarHorizontal(0, xorig, jugador);
+                    pintarVertical(yfin, yorig, jugador);
+                    pintarHorizontal(xfin, 0, jugador);
+                }
             }
-
-            this.getGraphics().drawImage(buffer, 0, 0, this);
-            espera();
         }
+        else
+        {
+            if(yf==yo)
+            {
+                System.out.println("yfin "+yf+"yorigin "+yo);
+                pintarHorizontal(xfin, xorig, jugador);
+            }else if(xo==xf){
+                System.out.println("xfin "+xf+"xorigin "+xo);
+                pintarVertical(yfin, yorig, jugador);
+            }else if(yf!=yo && xo!=xf)
+            {
+                boolean signoY,signoX;
+                signoY=yfin>yorig;
+                signoX=xfin>xorig;
+                if(signoX&&signoY)
+                {
+                    pintarENE(xfin,yfin,xorig,yorig,jugador);
+                }else if(signoY&&!signoX)
+                {
+                    pintarONO(xfin,yfin,xorig,yorig,jugador);
+                }else if(!signoY&&!signoX)
+                {
+                    pintarOSO(xfin,yfin,xorig,yorig,jugador);
+                }else {
+                    pintarESE(xfin,yfin,xorig,yorig,jugador);
+                }
 
+                    obj.setPosMa(xfin/75, yfin/75);
+            }
+        }
     }
 
     public final BufferedImage cargarImagen(String nombre)
@@ -160,8 +218,6 @@ public class EscenarioGrafico extends Canvas{
         super.paint(grphcs);
         //Pintando imagen cargada
         limpiarBuffer();
-        grphcs.drawImage(bi_fondo, 0, 0,alto,ancho,this);
-
         paintEscenario();
         pintarJugador();
         
@@ -179,12 +235,11 @@ public class EscenarioGrafico extends Canvas{
 
         BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
         Graphics graph=buffer.getGraphics();
-        boolean puedo=true;
 
         int factorX, factorY;
 
-        factorY=alto/fils;
-        factorX=ancho/columns;
+        factorY=alto/columns;
+        factorX=ancho/fils;
 
         graph.drawImage(bi_fondo, 0, 0, this);
 
@@ -260,60 +315,7 @@ public class EscenarioGrafico extends Canvas{
         return vecPunto;
     }
     
-   //Con una cantidad de casillas y la especificacion de a quien se mueve,se desplaza un jugador
-   public void moverJugador(int m, String j)
-   {
-       String jugador=j;
-       int xVieja, yVieja, posActual;
-       if(jugador.equals("robot"))
-       {
-            xVieja=posRobotX;
-            yVieja=posRobotY;
-            posActual=mapa[posRobotX][posRobotY];
-       }
-       else
-       {
-           xVieja=posHumanX;
-           yVieja=posHumanY;
-           posActual=mapa[posHumanX][posHumanY];
-       }
-
-        for(int idy=0; idy<8; idy++)
-        {
-            for(int idx=0; idx<8; idx++)
-            {
-                if(mapa[idx][idy]==posActual+m)
-                {
-                    if(jugador.equals("robot"))
-                    {
-                        posRobotX=idx;
-                        posRobotY=idy;
-                    }
-                    else
-                    {
-                        posHumanX=idx;
-                        posHumanY=idy;
-                    }
-                }
-            }
-        }
-        pintarJugador(xVieja, yVieja, jugador);
-       
-
-        /* BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
-        Graphics graph=buffer.getGraphics();
-        graph.drawImage(bi_fondo, 0, 0, this);
-
-        /*int cont=0;
-        while(cont<11){
-            robotsito.animarMov(true);
-            this.getGraphics().drawImage(buffer, 0, 0, this);
-            //cont++;
-            espera();
-       //}*/
-   }
-
-   public int getPosHumanX() {
+    public int getPosHumanX() {
         return posHumanX;
     }
 
@@ -345,4 +347,403 @@ public class EscenarioGrafico extends Canvas{
            
        }
    }
+
+    private void pintarENE(int xfin, int yfin, int xorig, int yorig, String jugador) {
+        int a=xfin-xorig;
+        int b=yfin-yorig;
+
+        if(jugador.equals("humano"))
+        {
+            humano.setDerecha(xfin>xorig);
+        }
+        else
+        {
+            robotsito.setDerecha(xfin>xorig);
+        }
+
+
+        double d=a-(b/2);
+        double ini,fin;
+
+        while(xorig<xfin)
+        {
+           if(d<0)
+           {
+               xorig=xorig+7;
+               d=d+a;
+           }
+           else{
+               xorig=xorig+7;
+               yorig=yorig+7;
+               d=d+a-b;
+           }
+
+            BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+            Graphics graph=buffer.getGraphics();
+            graph.drawImage(bi_fondo, 0, 0, this);
+
+           if(jugador.equals("humano"))
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(xorig, yorig);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+            }
+            else
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(xorig, yorig);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+            }
+            this.getGraphics().drawImage(buffer, 0, 0, this);
+            espera();
+        }
+
+    }
+
+    private void pintarONO(int xfin, int yfin, int xorig, int yorig, String jugador) {
+        int a=xfin-xorig;
+        int b=yfin-yorig;
+
+        if(jugador.equals("humano"))
+        {
+            humano.setDerecha(xfin>xorig);
+        }
+        else
+        {
+            robotsito.setDerecha(xfin>xorig);
+        }
+
+
+        double d=-(a+(b/2));
+        double ini,fin;
+
+        while(xorig>xfin)
+        {
+           if(d<0)
+           {
+               xorig=xorig-7;
+               d=d-a;
+           }
+           else{
+               xorig=xorig-7;
+               yorig=yorig+7;
+               d=d-(a+b);
+           }
+
+            BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+            Graphics graph=buffer.getGraphics();
+            graph.drawImage(bi_fondo, 0, 0, this);
+
+           if(jugador.equals("humano"))
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(xorig, yorig);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+            }
+            else
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(xorig, yorig);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+            }
+            this.getGraphics().drawImage(buffer, 0, 0, this);
+            espera();
+        }
+    }
+
+    private void pintarOSO(int xfin, int yfin, int xorig, int yorig, String jugador) {
+        int a=xfin-xorig;
+        int b=yfin-yorig;
+
+        if(jugador.equals("humano"))
+        {
+            humano.setDerecha(xfin>xorig);
+        }
+        else
+        {
+            robotsito.setDerecha(xfin>xorig);
+        }
+
+
+        double d=-(a-(b/2));
+        double ini,fin;
+
+        while(xorig>xfin)
+        {
+           if(d<0)
+           {
+               xorig=xorig-7;
+               d=d-a;
+           }
+           else{
+               xorig=xorig-7;
+               yorig=yorig-7;
+               d=d-(a-b);
+           }
+
+            BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+            Graphics graph=buffer.getGraphics();
+            graph.drawImage(bi_fondo, 0, 0, this);
+
+           if(jugador.equals("humano"))
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(xorig, yorig);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+            }
+            else
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(xorig, yorig);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+            }
+            this.getGraphics().drawImage(buffer, 0, 0, this);
+            espera();
+        }
+    }
+
+    private void pintarESE(int xfin, int yfin, int xorig, int yorig, String jugador) {
+        int a=xfin-xorig;
+        int b=yfin-yorig;
+
+        if(jugador.equals("humano"))
+        {
+            humano.setDerecha(xfin>xorig);
+        }
+        else
+        {
+            robotsito.setDerecha(xfin>xorig);
+        }
+
+
+        double d=a+(b/2);
+        double ini,fin;
+
+        while(xorig<xfin)
+        {
+           if(d<0)
+           {
+               xorig=xorig+7;
+               d=d+a;
+           }
+           else{
+               xorig=xorig+7;
+               yorig=yorig-7;
+               d=d+a+b;
+           }
+
+            BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+            Graphics graph=buffer.getGraphics();
+            graph.drawImage(bi_fondo, 0, 0, this);
+
+           if(jugador.equals("humano"))
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(xorig, yorig);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+            }
+            else
+            {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(xorig, yorig);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+            }
+            this.getGraphics().drawImage(buffer, 0, 0, this);
+            espera();
+        }
+    }
+
+    private void pintarVertical(int yfin, int yorig, String jugador) {
+        Jugador obj;
+        if(jugador.equals("humano"))
+        {
+            obj=humano;
+            humano.setDerecha(yfin>yorig);
+        }else
+        {
+            obj=robotsito;
+            robotsito.setDerecha(yfin>yorig);
+        }
+
+        obj.setPosMa(obj.getX(), yfin/75);
+
+        if(yfin>yorig)
+        {
+            while(yorig<yfin)
+            {
+                yorig=yorig+7;
+
+                BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+                Graphics graph=buffer.getGraphics();
+                graph.drawImage(bi_fondo, 0, 0, this);
+
+                if(jugador.equals("humano"))
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(humano.idx, yorig);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+                }
+                else
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(robotsito.idx, yorig);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+                }
+                this.getGraphics().drawImage(buffer, 0, 0, this);
+                espera();
+            }
+        }
+        else{
+            
+            while(yfin<yorig)
+            {
+                yorig=yorig-8;
+                
+                BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+                Graphics graph=buffer.getGraphics();
+                graph.drawImage(bi_fondo, 0, 0, this);
+
+                if(jugador.equals("humano"))
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(humano.idx, yorig);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+                }
+                else
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(robotsito.idx, yorig);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+                }
+                this.getGraphics().drawImage(buffer, 0, 0, this);
+                espera();
+            }
+
+        }
+    }
+
+    private void pintarHorizontal(int xfin, int xorig, String jugador) {
+        Jugador obj;
+        if(jugador.equals("humano"))
+        {
+            obj=humano;
+            humano.setDerecha(xfin>xorig);
+        }else
+        {
+            obj=robotsito;
+            robotsito.setDerecha(xfin>xorig);
+        }
+
+        int x=xfin/75;
+        obj.setPosMa(x, obj.getY());
+        if(xfin>xorig)
+        {
+            while(xorig<xfin)
+            {
+                xorig=xorig+8;
+
+                BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+                Graphics graph=buffer.getGraphics();
+                graph.drawImage(bi_fondo, 0, 0, this);
+
+                if(jugador.equals("humano"))
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(xorig, humano.idy);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+                }
+                else
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(xorig, robotsito.idy);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+                }
+                this.getGraphics().drawImage(buffer, 0, 0, this);
+                espera();
+            }
+        }
+        else{
+
+            while(xfin<xorig)
+            {
+                xorig=xorig-7;
+
+                BufferedImage buffer=new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
+                Graphics graph=buffer.getGraphics();
+                graph.drawImage(bi_fondo, 0, 0, this);
+
+                if(jugador.equals("humano"))
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                humano.setPos(xorig, humano.idy);
+
+                humano.animarMov();
+
+                robotsito.pintar(graph, this);
+                humano.pintar(graph, this);
+                }
+                else
+                {
+                //POR AHORA, HAY QUE QUITARLO
+                robotsito.setPos(xorig, robotsito.idy);
+                robotsito.animarMov();
+
+                humano.pintar(graph, this);
+                robotsito.pintar(graph, this);
+                }
+                this.getGraphics().drawImage(buffer, 0, 0, this);
+                espera();
+            }
+
+        }
+    }
 }

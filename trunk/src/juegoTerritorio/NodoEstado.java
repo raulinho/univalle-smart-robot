@@ -305,7 +305,7 @@ public class NodoEstado {
             {
               if(mapa[jughx][jughy]==' ')
               {
-                if(max)utilidad=utilidad-getUtilidadPosicion(jughx, jughy);
+                if(!max)utilidad=utilidad-getUtilidadPosicion(jughx, jughy);
                 else utilidad=utilidad+getUtilidadPosicion(jughx, jughy);
               }
             }

@@ -18,16 +18,20 @@ import javax.imageio.ImageIO;
  *
  * @author jorgeorm
  */
-public class Robot {
-    int x,y;
-    int gifIzq,gifDer;
-    BufferedImage [] camiarDerecha,caminarIzquierda;
+public class Robot extends Jugador{
 
-    public Robot() {
+
+    public Robot(int idx,int idy)
+    {
+        super();
         camiarDerecha= new BufferedImage[9];
         caminarIzquierda=new BufferedImage[9];
-        gifDer=0;
-        gifIzq=0;
+        this.x=idx/75;
+        this.y=idy/75;
+
+        this.idx=idx;
+        this.idy=idy;
+        
         for(int i=0;i<9;i++)
         {
             camiarDerecha[i] = cargarImagen("img/robot/caminarDer/" +(i+1)+ ".gif");
@@ -35,38 +39,11 @@ public class Robot {
         }
     }
 
-    public final BufferedImage cargarImagen(String nombre)
-    {
-        URL url=null;
-        try {
-            url=getClass().getClassLoader().getResource(nombre);
-            return ImageIO.read(url);
-        } catch (IOException ex) {
-            System.out.println("No se pudo cargar la imagen " + nombre +" de "+url);
-            System.out.println("El error fue : ");
-            Logger.getLogger(EscenarioGrafico.class.getName()).log(Level.SEVERE, null, ex);
 
-            return null;
-        }
-    }
-
-    public void animarMov(boolean derecha)
+    public void pintar(Graphics graph,ImageObserver imobs)
     {
-        if(derecha)
-        {
-            gifDer++;
-            if(gifDer>8)gifDer=0;
-        }else{
-            gifIzq++;
-            if(gifIzq>8)gifIzq=0;
-        }
-        
-    }
-
-    public void pintar(boolean Derecha,Graphics graph,ImageObserver imobs,int x,int y)
-    {
-        if(Derecha)graph.drawImage(camiarDerecha[gifDer], x, y, imobs);
-        else graph.drawImage(caminarIzquierda[gifIzq], x, y, imobs);
+        if(derecha)graph.drawImage(camiarDerecha[gifDer], idx, idy, imobs);
+        else graph.drawImage(caminarIzquierda[gifIzq], idx, idy, imobs);
     }
 
 }
