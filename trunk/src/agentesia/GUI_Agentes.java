@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.*;
 import javax.swing.JOptionPane;
 import juegoPizza.PizzaGUI;
+import juegoTerritorio.GUI_Territorio;
 
 /*
  * To change this template, choose Tools | Templates
@@ -213,7 +214,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
         }
         if(encuentro)
         {
-            //TODO lanzar Minijuego arrancando Humano
+            lanzarMinijuego("humano", "robot");
 
             JOptionPane.showMessageDialog(this, "Se lanza Minijuego");
         }
@@ -243,7 +244,7 @@ public class GUI_Agentes extends javax.swing.JFrame {
         }
         if(encuentro)
         {
-            //TODO lanzar Minijuego arrancando Maquina
+            lanzarMinijuego("robot","humano");
             JOptionPane.showMessageDialog(this, "Se lanza Minijuego");
         }
         jugarRobot();
@@ -260,6 +261,20 @@ public class GUI_Agentes extends javax.swing.JFrame {
         return num;
     }
 
+    public void lanzarMinijuego(String jugador1, String jugador2)
+    {
+        int eleccion=(int)Math.random()*2;
+
+        if(eleccion==0)
+        {
+            PizzaGUI pizza= new PizzaGUI(jugador1, jugador2);
+        }
+
+        if(eleccion==1)
+        {
+            GUI_Territorio territorio= new GUI_Territorio(jugador1);
+        }
+    }
     
     /**
     * @param args the command line arguments
