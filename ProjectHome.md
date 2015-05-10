@@ -1,0 +1,1 @@
+Esta aplicación fue hecha para el proyecto de la materia inteligencia artificial con los algoritmos de busqueda avara y a
